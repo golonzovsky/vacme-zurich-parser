@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vacme-parser
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vacme-parser
+  template:
+    metadata:
+      labels:
+        app: vacme-parser
+    spec:
+      containers:
+      - name: vacme-parser
+        image: golonzovsky/vacme-parser:latest
+        env:
+        - name: REFRESH_INTERVAL_SEC
+          value: '1200'
+        - name: REGISTRATION_ID
+          valueFrom:
+            secretKeyRef:
+              key: registration_id
+              name: vacme-parser
+        - name: REFRESH_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: refresh_token
+              name: vacme-parser
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vacme-parser
+spec:
+  ports:
+    - name: api
+      port: 5000
+      targetPort: 5000
+  selector:
+    app: vacme-parser
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vacme-parser
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    cert-manager.io/issuer: "letsencrypt-prod"
+spec:
+  rules:
+    - host: vacme.kloud.top
+      http:
+        paths:
+          - backend:
+              service:
+                name: vacme-parser
+                port:
+                  name: api
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - vacme.kloud.top
+      secretName: vacme-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt-prod-http-key
+    solvers:
+      - http01:
+          ingress:
+            class:  nginx
