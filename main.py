@@ -27,8 +27,10 @@ headers = {
 
 cache = {
     'locations': [],
-    'lastUpdate': None,
-    'vaccination_group': 'N'
+    'last_refresh': None,
+    'refresh_interval_sec': config['refresh_interval_sec'],
+    'vaccination_group': 'N',
+    'source': 'https://github.com/golonzovsky/vacme-zurich-parser',
 }
 
 
@@ -120,8 +122,7 @@ def fetch_locations_with_both_appointments(locations):
     for next in locations:
         resp = do_request_second_appointment(next['locationId'], next['nextDate'])
         if resp != '':
-            available = {'locationId': next['locationId'],
-                         'name': next['name'],
+            available = {'name': next['name'],
                          'firstDate': next['nextDateParsed'],
                          'secondDate': parse_date(resp['nextDate'])}
             logging.info("found location with both available: %s %s", next['name'], available)
@@ -143,7 +144,7 @@ def update_caches():
     both = fetch_locations_with_both_appointments(first)
 
     cache['locations'] = both
-    cache['lastUpdate'] = dt.datetime.now()
+    cache['last_refresh'] = dt.datetime.now()
 
     logging.info(cache)
 

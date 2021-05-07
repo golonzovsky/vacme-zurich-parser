@@ -7,7 +7,8 @@ Be aware is uses personal refresh token for existing registration and reverse en
 
 Currently json api available under https://vacme.kloud.top  
 
-Python is not my primary language, so I have no idea what I'm doin.. ¯\_(ツ)_/¯
+Python is not my primary language, so I have no idea what I'm doin.. ¯\_(ツ)_/¯  
+Its just jupiter experiment wrapped into api (see original `vaccination_search.ipynb`)  
 
 ## local deployment
 if you want to run it locally, find your REGISTRATION_ID and REFRESH_TOKEN from browser network tab and run:
