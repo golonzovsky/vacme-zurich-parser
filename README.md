@@ -5,7 +5,9 @@ https://zh.vacme.ch provides a way to register for vaccination in Zurich. Since 
 This tries to simplify this by exposing rest api with up to date available slots for vaccination in Zurich.  
 Be aware is uses personal refresh token for existing registration and reverse engineered api, so its all quite fragile.  
 
-Python is not my primary language, so I have no idea what I'm doin.. ¯\_(ツ)_/¯ 
+Currently json api available under https://vacme.kloud.top  
+
+Python is not my primary language, so I have no idea what I'm doin.. ¯\_(ツ)_/¯
 
 ## local deployment
 if you want to run it locally, find your REGISTRATION_ID and REFRESH_TOKEN from browser network tab and run:
