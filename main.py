@@ -26,11 +26,13 @@ headers = {
 }
 
 cache = {
-    'data': []
+    'locations': [],
+    'lastUpdate': None,
+    'vaccination_group': 'N'
 }
 
 
-def doRequestFirstPerId(id):
+def do_request_first_appointment(id):
     resp = requests.post('https://zh.vacme.ch/api/v1/reg/dossier/termine/nextfrei/{}/ERSTE_IMPFUNG'.format(id),
                          headers=headers)
     if resp.status_code == 200:
@@ -42,7 +44,7 @@ def doRequestFirstPerId(id):
         return ''
 
 
-def doRequestSecondPerIdAndStart(id, nextDate):
+def do_request_second_appointment(id, nextDate):
     data = '{"nextDate": "%s"}' % nextDate
     resp = requests.post('https://zh.vacme.ch/api/v1/reg/dossier/termine/nextfrei/{}/ZWEITE_IMPFUNG'.format(id),
                          headers=headers, data=data)
@@ -55,31 +57,34 @@ def doRequestSecondPerIdAndStart(id, nextDate):
         return ''
 
 
-def doListLocations():
-    return requests.get('https://zh.vacme.ch/api/v1/reg/dossier/odi/all/{}'.format(config['registration_id']), headers=headers).json()
+def fetch_all_locations():
+    locations = requests.get('https://zh.vacme.ch/api/v1/reg/dossier/odi/all/{}'.format(config['registration_id']),
+                        headers=headers).json()
+    logging.info("found %s locations", len(locations))
+    return locations
 
 
-def ensureToken():
+def ensure_token():
     if headers['Authorization'] == '':
-        doRefreshToken()
+        do_refresh_token()
         return
 
     account_resp = requests.get('https://zh.vacme.ch/auth/realms/vacme/account', headers=headers)
     if account_resp.status_code == 401:
-        doRefreshToken()
+        do_refresh_token()
         account_resp = requests.get('https://zh.vacme.ch/auth/realms/vacme/account', headers=headers)
         if account_resp.status_code == 401:
             logging.error("token refresh failed. cannot recover, exiting")
             sys.exit("Cannon recover token")
 
 
-def doRefreshToken():
-    data = {
+def do_refresh_token():
+    req = {
         'grant_type': 'refresh_token',
         'refresh_token': config['refresh_token'],
         'client_id': 'vacme-initial-app-prod'
     }
-    resp = requests.post('https://zh.vacme.ch/auth/realms/vacme/protocol/openid-connect/token', data=data)
+    resp = requests.post('https://zh.vacme.ch/auth/realms/vacme/protocol/openid-connect/token', data=req)
 
     if resp.status_code != 200:
         logging.error("token refresh failed: %s. cannot recover, exiting", resp.status_code)
@@ -88,55 +93,64 @@ def doRefreshToken():
     resp_json = resp.json()
     config['refresh_token'] = resp_json['refresh_token']
     headers['Authorization'] = 'Bearer {}'.format(resp_json['access_token'])
-    logging.info("update access token successful, expires in %s; refresh expires in %s", resp_json['expires_in'], resp_json['refresh_expires_in'])
+    logging.info("update access token successful, expires in %s; refresh expires in %s. %s", resp_json['expires_in'], resp_json['refresh_expires_in'], resp_json['refresh_token'])
+    #todo update k8s secret startup seed token instead of just logging it here
 
 
-def fetchAvailableFirst(locations):
+def fetch_location_with_available_first_appointment(locations):
     next_first_date_locations = []
 
     for location in locations:
-        resp = doRequestFirstPerId(location['id'])
+        resp = do_request_first_appointment(location['id'])
         if resp != '':
             logging.info("found first location: %s %s", location['name'], resp)
             next_first_date_locations.append({
                 'locationId': location['id'],
                 'name': location['name'],
                 'nextDate': resp['nextDate'],
-                'nextDateParsed': dt.datetime.strptime(resp['nextDate'], '%Y-%m-%dT%H:%M:%S')
+                'nextDateParsed': parse_date(resp['nextDate'])
             })
     next_first_date_locations.sort(key=lambda x: x['nextDateParsed'])
+    logging.info("found %s first appointments", len(next_first_date_locations))
     return next_first_date_locations
 
 
-def fetchSecondLocation(locations):
+def fetch_locations_with_both_appointments(locations):
     next_second_locations = []
     for next in locations:
-        resp = doRequestSecondPerIdAndStart(next['locationId'], next['nextDate'])
+        resp = do_request_second_appointment(next['locationId'], next['nextDate'])
         if resp != '':
-            available = next.copy()
-            available['secondDate'] = resp['nextDate']
+            available = {'locationId': next['locationId'],
+                         'name': next['name'],
+                         'firstDate': next['nextDateParsed'],
+                         'secondDate': parse_date(resp['nextDate'])}
             logging.info("found location with both available: %s %s", next['name'], available)
             next_second_locations.append(available)
+    logging.info("found %s locations with both appointments", len(next_second_locations))
     return next_second_locations
+
+
+def parse_date(st):
+    return dt.datetime.strptime(st, '%Y-%m-%dT%H:%M:%S')
 
 
 def update_caches():
     logging.info("update caches")
-    ensureToken()
-    locations = doListLocations()
-    logging.info("found %s locations", len(locations))
-    first = fetchAvailableFirst(locations)
-    logging.info("found %s first appointments", len(first))
-    second = fetchSecondLocation(first)
-    logging.info("found %s locations with both appointments", len(second))
-    cache['data'] = second
-    logging.info(second)
+
+    ensure_token()
+    locations = fetch_all_locations()
+    first = fetch_location_with_available_first_appointment(locations)
+    both = fetch_locations_with_both_appointments(first)
+
+    cache['locations'] = both
+    cache['lastUpdate'] = dt.datetime.now()
+
+    logging.info(cache)
 
 
 @app.route("/")
 def home():
-    """ Function for test purposes. """
-    return jsonify(cache['data'])
+    return jsonify(cache)
 
 
 if __name__ == "__main__":

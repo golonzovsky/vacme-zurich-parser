@@ -74,6 +74,7 @@ metadata:
 spec:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
+    email: alex.golonzovsky@gmail.com
     privateKeySecretRef:
       name: letsencrypt-prod-http-key
     solvers:
