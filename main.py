@@ -17,7 +17,7 @@ config = {
 }
 
 headers = {
-    'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:88.0) Gecko/20100101 Firefox/88.0',
+    'User-Agent': 'Friendly parser. https://github.com/golonzovsky/vacme-zurich-parser',
     'Accept': 'application/json',
     'Referer': 'https://zh.vacme.ch/',
     'Content-Type': 'application/json',
@@ -91,6 +91,10 @@ def do_refresh_token():
     if resp.status_code != 200:
         logging.error("token refresh failed: %s. cannot recover, exiting", resp.status_code)
         sys.exit("Cannot recover token")
+
+    if resp.headers['content-type'] == 'text/html':
+        logging.error("token refresh require captcha %s %s", resp.status_code, resp.headers['content-type'])
+        sys.exit("Please enter captcha. Exiting.")
 
     resp_json = resp.json()
     config['refresh_token'] = resp_json['refresh_token']
