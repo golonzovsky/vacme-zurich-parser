@@ -10,6 +10,8 @@ Currently json api available under https://vacme.kloud.top
 Python is not my primary language, so I have no idea what I'm doin.. ¯\_(ツ)_/¯  
 Its just jupiter experiment wrapped into api (see original `vaccination_search.ipynb`)  
 
+(If you are developing `zh.vacme.ch` and my requests bother you - just create issue here, and I will stop crawling) 
+
 ## local deployment
 if you want to run it locally, find your REGISTRATION_ID and REFRESH_TOKEN from browser network tab and run:
 ```bash
