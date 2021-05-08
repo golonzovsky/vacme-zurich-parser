@@ -12,6 +12,10 @@ Its just jupiter experiment wrapped into api (see original `vaccination_search.i
 
 (If you are developing `zh.vacme.ch` and my requests bother you - just create issue here, and I will stop crawling) 
 
+## todo
+ - [ ] simple ui
+ - [ ] store last refreshed token in k8s seed secret
+
 ## local deployment
 if you want to run it locally, find your REGISTRATION_ID and REFRESH_TOKEN from browser network tab and run:
 ```bash
