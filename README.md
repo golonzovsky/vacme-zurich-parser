@@ -18,6 +18,8 @@ Stay safe! ;)
 
 UPD: I've found similar service `https://rimpfli.web.app/` - check it out as well. It has Bern in addition to Zurich and notifications! 
 
+![ui screenshot](ui_example.png)
+
 ## todo
 - [ ] build full UI mapping name -> location
 - [ ] sorting by dates/name in ui (?)
