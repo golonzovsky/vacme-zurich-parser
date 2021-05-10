@@ -20,7 +20,6 @@ UPD: I've found similar service `https://rimpfli.web.app/` - check it out as wel
 
 ## todo
 - [ ] build full UI mapping name -> location
-- [ ] display available pins with different color on a map
 - [ ] sorting by dates/name in ui (?)
 - [ ] notifications in UI (?)
 - [ ] contact locations to get an info of which vaccine is in use there
