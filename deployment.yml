@@ -18,7 +18,7 @@ spec:
         image: golonzovsky/vacme-parser:latest
         env:
         - name: REFRESH_INTERVAL_SEC
-          value: '1200'
+          value: '600'
         - name: REGISTRATION_ID
           valueFrom:
             secretKeyRef:

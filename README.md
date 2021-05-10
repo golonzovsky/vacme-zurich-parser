@@ -14,7 +14,6 @@ Its just jupiter experiment wrapped into api (see original `vaccination_search.i
 
 ## todo
  - [ ] simple ui
- - [ ] store last refreshed token in k8s seed secret
 
 ## local deployment
 if you want to run it locally, find your REGISTRATION_ID and REFRESH_TOKEN from browser network tab and run:
@@ -32,4 +31,4 @@ If you run in k8s - you need to make your cluster with private nodes and create 
 gcloud beta compute ssh --zone "europe-west6-a" "gke-main-preemptible-e2-medium-3b140cfc-wv1s" --tunnel-through-iap --project "?????" -- -N -p 22 -D localhost:5000
 ```
 
-Currently deployed to https://vacme.kloud.top with refresh interval 20 min.
+Currently deployed to https://vacme.kloud.top with refresh interval 10 min.
