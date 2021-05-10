@@ -8,19 +8,21 @@ Be aware is uses personal refresh token for existing registration and reverse en
 
 Main part if you want to reuse code is in `parser` folder. Its python app which periodically calls `zh.vacme.ch`, and exposes basic api for UI and caching layers.  
 Python is not my primary language, so I have no idea what I'm doin.. ¯\_(ツ)_/¯  
-Its just jupiter experiment wrapped into api (see original `vaccination_search.ipynb`)
+Its was just jupiter experiment (see original `vaccination_search.ipynb`) wrapped into api and extended with token refresh.  
 
 (If you are developing `zh.vacme.ch` and my requests bother you - just create issue here, and I will stop crawling)
 
 Currently, deployed to https://vacme.kloud.top with refresh interval 10 min and with my account for group `N`.
 
-Stay safe ;)
+Stay safe! ;)
 
 UPD: I've found similar service `https://rimpfli.web.app/` - check it out as well. It has Bern in addition to Zurich and notifications! 
 
 ## todo
 - [ ] fix map in UI
 - [ ] build full UI mapping name -> location
+- [ ] navigate to clicked appointment on a map
+- [ ] display available pins with different color on a map
 - [ ] sorting by dates/name in ui (?)
 - [ ] notifications in UI (?)
 - [ ] contact locations to get an info of which vaccine is in use there
