@@ -4,13 +4,15 @@ import sys
 import datetime as dt
 import requests
 import atexit
+import base64
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask
 from flask import jsonify
+from kubernetes import client, config
 
 app = Flask(__name__)
 
-config = {
+app_config = {
     'refresh_token': os.getenv("REFRESH_TOKEN"),
     'registration_id': os.getenv("REGISTRATION_ID"),
     'refresh_interval_sec': int(os.getenv("REFRESH_INTERVAL_SEC", 60))
@@ -21,18 +23,19 @@ headers = {
     'Accept': 'application/json',
     'Referer': 'https://zh.vacme.ch/',
     'Content-Type': 'application/json',
-    'Authorization': '',
     'Origin': 'https://zh.vacme.ch',
+    'Authorization': '',
 }
 
 cache = {
     'locations': [],
     'last_refresh': None,
-    'refresh_interval_sec': config['refresh_interval_sec'],
+    'refresh_interval_sec': app_config['refresh_interval_sec'],
     'vaccination_group': 'N',
     'source': 'https://github.com/golonzovsky/vacme-zurich-parser',
 }
 
+k8s_API = {}
 
 def do_request_first_appointment(id):
     resp = requests.post('https://zh.vacme.ch/api/v1/reg/dossier/termine/nextfrei/{}/ERSTE_IMPFUNG'.format(id),
@@ -60,7 +63,7 @@ def do_request_second_appointment(id, nextDate):
 
 
 def fetch_all_locations():
-    locations = requests.get('https://zh.vacme.ch/api/v1/reg/dossier/odi/all/{}'.format(config['registration_id']),
+    locations = requests.get('https://zh.vacme.ch/api/v1/reg/dossier/odi/all/{}'.format(app_config['registration_id']),
                         headers=headers).json()
     logging.info("found %s locations", len(locations))
     return locations
@@ -83,7 +86,7 @@ def ensure_token():
 def do_refresh_token():
     req = {
         'grant_type': 'refresh_token',
-        'refresh_token': config['refresh_token'],
+        'refresh_token': app_config['refresh_token'],
         'client_id': 'vacme-initial-app-prod'
     }
     resp = requests.post('https://zh.vacme.ch/auth/realms/vacme/protocol/openid-connect/token', data=req)
@@ -97,10 +100,26 @@ def do_refresh_token():
         sys.exit("Please enter captcha. Exiting.")
 
     resp_json = resp.json()
-    config['refresh_token'] = resp_json['refresh_token']
+    new_refresh_token = resp_json['refresh_token']
+    app_config['refresh_token'] = new_refresh_token
     headers['Authorization'] = 'Bearer {}'.format(resp_json['access_token'])
-    logging.info("update access token successful, expires in %s; refresh expires in %s. %s", resp_json['expires_in'], resp_json['refresh_expires_in'], resp_json['refresh_token'])
-    #todo update k8s secret startup seed token instead of just logging it here
+    logging.info("update access token successful, expires in %s; refresh expires in %s. %s", resp_json['expires_in'], resp_json['refresh_expires_in'],
+                 new_refresh_token)
+    update_token_secret(new_refresh_token)
+
+
+def update_token_secret(new_token):
+    body = {
+        "metadata": {
+            "annotations": {
+                "vacme/last-update": dt.datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+            }
+        },
+        "data": {
+            "refresh_token": base64.b64encode(new_token.encode("utf-8")).decode("ascii")
+        }
+    }
+    client.CoreV1Api().patch_namespaced_secret("vacme-parser", "vacme", body, pretty=True)
 
 
 def fetch_location_with_available_first_appointment(locations):
@@ -161,14 +180,19 @@ def home():
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-    if config['refresh_token'] == '' or config['registration_id'] == '':
+    if app_config['refresh_token'] == '' or app_config['registration_id'] == '':
         sys.exit("set both REFRESH_TOKEN and REGISTRATION_ID env variables")
+
+    try:
+        config.load_incluster_config()
+    except Exception:
+        config.load_kube_config()
 
     logging.info("Starting vacme parser")
     update_caches()
 
     scheduler = BackgroundScheduler()
-    scheduler.add_job(func=update_caches, trigger="interval", seconds=config['refresh_interval_sec'])
+    scheduler.add_job(func=update_caches, trigger="interval", seconds=app_config['refresh_interval_sec'])
     scheduler.start()
     atexit.register(lambda: scheduler.shutdown())
 

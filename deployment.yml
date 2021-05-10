@@ -12,6 +12,7 @@ spec:
       labels:
         app: vacme-parser
     spec:
+      serviceAccountName: vacme
       containers:
       - name: vacme-parser
         image: golonzovsky/vacme-parser:latest
@@ -66,6 +67,36 @@ spec:
     - hosts:
         - vacme.kloud.top
       secretName: vacme-tls
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: vacme
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: vacme
+rules:
+  - apiGroups: [""]
+    resources:
+      - secrets
+    verbs:
+      - patch
+      - update
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: vacme
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: vacme
+subjects:
+  - kind: ServiceAccount
+    name: vacme
+
 ---
 apiVersion: cert-manager.io/v1
 kind: Issuer
