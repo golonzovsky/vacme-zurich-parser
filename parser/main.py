@@ -35,6 +35,10 @@ cache = {
     'source': 'https://github.com/golonzovsky/vacme-zurich-parser',
 }
 
+all_locations = {
+    'locations': []
+}
+
 k8s_API = {}
 
 def do_request_first_appointment(id):
@@ -63,10 +67,11 @@ def do_request_second_appointment(id, nextDate):
 
 
 def fetch_all_locations():
-    locations = requests.get('https://zh.vacme.ch/api/v1/reg/dossier/odi/all/{}'.format(app_config['registration_id']),
+    resp = requests.get('https://zh.vacme.ch/api/v1/reg/dossier/odi/all/{}'.format(app_config['registration_id']),
                         headers=headers).json()
-    logging.info("found %s locations", len(locations))
-    return locations
+    logging.info("found %s locations", len(resp))
+    all_locations['locations'] = resp
+    return resp
 
 
 def ensure_token():
@@ -162,14 +167,19 @@ def update_caches():
     logging.info("update caches")
 
     ensure_token()
-    locations = fetch_all_locations()
-    first = fetch_location_with_available_first_appointment(locations)
+    all_locations = fetch_all_locations()
+    first = fetch_location_with_available_first_appointment(all_locations)
     both = fetch_locations_with_both_appointments(first)
 
     cache['locations'] = both
     cache['last_refresh'] = dt.datetime.now()
 
     logging.info(cache)
+
+
+@app.route("/locations")
+def locations_path():
+    return jsonify(all_locations)
 
 
 @app.route("/")

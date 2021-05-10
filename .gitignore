@@ -1,2 +1,5 @@
 venv
 .idea
+client/node_modules
+client/build
+client/*.env

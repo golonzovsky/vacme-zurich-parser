@@ -12,7 +12,7 @@ spec:
       labels:
         app: vacme-parser
     spec:
-      serviceAccountName: vacme
+      serviceAccountName: vacme-parser
       containers:
       - name: vacme-parser
         image: golonzovsky/vacme-parser:latest
@@ -51,6 +51,7 @@ metadata:
     kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     cert-manager.io/issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   rules:
     - host: vacme.kloud.top
@@ -61,8 +62,15 @@ spec:
                 name: vacme-parser
                 port:
                   name: api
-            path: /
+            path: /api(/|$)(.*)
             pathType: Prefix
+          - backend:
+              service:
+                name: vacme-parser #todo UI eventually to be here
+                port:
+                  name: api
+            path: /
+            pathType: Exact
   tls:
     - hosts:
         - vacme.kloud.top
@@ -71,12 +79,12 @@ spec:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: vacme
+  name: vacme-parser
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: vacme
+  name: vacme-parser
 rules:
   - apiGroups: [""]
     resources:
@@ -88,14 +96,14 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: vacme
+  name: vacme-parser
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: vacme
+  name: vacme-parser
 subjects:
   - kind: ServiceAccount
-    name: vacme
+    name: vacme-parser
 
 ---
 apiVersion: cert-manager.io/v1
