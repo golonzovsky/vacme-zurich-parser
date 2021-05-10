@@ -6,13 +6,13 @@ Probably website was designed in this way to support vaccines with 1 injection a
 This tries to simplify search by exposing rest api and UI with up to date available slots for vaccination in Zurich.  
 Be aware is uses personal refresh token for existing registration and reverse engineered api, so its all quite fragile.  
 
-Main part if you want to reuse code is in `parser` folder. Its python app which periodically calls `zh.vacme.ch` apis, and exposes basic api for UI and caching layers.  
+Main part if you want to reuse code is in `parser` folder. Its python app which periodically calls `zh.vacme.ch`, and exposes basic api for UI and caching layers.  
 Python is not my primary language, so I have no idea what I'm doin.. ¯\_(ツ)_/¯  
 Its just jupiter experiment wrapped into api (see original `vaccination_search.ipynb`)
 
 (If you are developing `zh.vacme.ch` and my requests bother you - just create issue here, and I will stop crawling)
 
-Currently, deployed to https://vacme.kloud.top with refresh interval 10 min.
+Currently, deployed to https://vacme.kloud.top with refresh interval 10 min and with my account for group `N`.
 
 Stay safe ;)
 
