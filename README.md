@@ -20,6 +20,7 @@ UPD: I've found similar service `https://rimpfli.web.app/` - check it out well. 
 - [ ] build full UI mapping name -> location
 - [ ] sorting by dates/name in ui (?)
 - [ ] notifications in UI (?)
+- [ ] contact locations to get an info of which vaccine is in use there
 
 ## API
 
