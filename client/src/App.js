@@ -16,7 +16,7 @@ function App() {
     useEffect(() => {
         async function fetchData() {
             const result = await axios(
-                '/api',
+                '/api/',
             );
             setData(result.data);
         }
@@ -34,8 +34,7 @@ function App() {
                     <Col lg={{span: 6, offset: 0}} style={{minHeight: "100vh", padding: '30px'}}>
                         <Title level={3} style={{paddingTop: '50px'}}>Available slots for group N:</Title>
                         <LocationList locations={data.locations}/>
-                        <Text type="secondary" style={{paddingTop: '15px', display: 'block'}}>Last
-                            refresh {moment(data.last_refresh).fromNow()}</Text>
+                        <Text type="secondary" style={{paddingTop: '15px', display: 'block'}}>Last refresh: {moment(data.last_refresh).fromNow()}</Text>
                     </Col>
                     <Col lg={{span: 18, offset: 0}} style={{minHeight: "100vh"}}>
                         <Map/>
@@ -47,6 +46,7 @@ function App() {
 }
 
 function Map() {
+    //todo fill with data
     const [viewport, setViewport] = React.useState({
         latitude: 47.377909732589615,
         longitude: 8.540479916024365,

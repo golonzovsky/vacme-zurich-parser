@@ -182,13 +182,13 @@ def update_caches():
     logging.info(cache)
 
 
-@app.route("/locations")
-def locations_path():
+@app.route("/api/locations")
+def api_locations():
     return jsonify(all_locations)
 
 
-@app.route("/")
-def home():
+@app.route("/api/")
+def api_home():
     return jsonify(cache)
 
 
