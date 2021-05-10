@@ -12,7 +12,6 @@ const {Title, Paragraph, Text} = Typography;
 function App() {
     const [data, setData] = useState({locations: []});
 
-
     useEffect(() => {
         async function fetchData() {
             const result = await axios(
@@ -46,16 +45,17 @@ function App() {
 }
 
 function LocationList(props) {
+    const {locations} = props;
 
     const formatDate = (date) => {
         return moment(date).format("DD MMMM YYYY")
     };
 
     return <div>
-        {props.locations && props.locations.length ?
+        {locations && locations.length ?
             <List
                 itemLayout="horizontal"
-                dataSource={props.locations}
+                dataSource={locations}
                 renderItem={item => (
                     <List.Item>
                         <List.Item.Meta
