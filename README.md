@@ -19,9 +19,7 @@ Stay safe! ;)
 UPD: I've found similar service `https://rimpfli.web.app/` - check it out as well. It has Bern in addition to Zurich and notifications! 
 
 ## todo
-- [ ] fix map in UI
 - [ ] build full UI mapping name -> location
-- [ ] navigate to clicked appointment on a map
 - [ ] display available pins with different color on a map
 - [ ] sorting by dates/name in ui (?)
 - [ ] notifications in UI (?)

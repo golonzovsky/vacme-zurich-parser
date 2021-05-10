@@ -23,7 +23,7 @@ const {Title, Paragraph, Text} = Typography;
 
 function App() {
     const [data, setData] = useState({locations: []});
-    //const dummyData = {"last_refresh":1620664264843,"locations":[{"firstDate":1620734400000,"name":"_Impfzentrum Meilen","secondDate":1623153600000},{"firstDate":1620820800000,"name":"_Impfzentrum Horgen","secondDate":1623240000000}],"refresh_interval_sec":600,"source":"https://github.com/golonzovsky/vacme-zurich-parser","vaccination_group":"N"}
+    const dummyData = {"last_refresh":1620682132562,"locations":[{"firstDate":1620820800000,"name":"_Impfzentrum Uster","secondDate":1623240000000},{"firstDate":1620907200000,"name":"_Impfzentrum Winterthur","secondDate":1623758400000},{"firstDate":1621598400000,"name":"_Impfzentrum Wetzikon","secondDate":1624017600000},{"firstDate":1621944000000,"name":"_Referenz-Impfzentrum Z\u00fcrich","secondDate":1624363200000},{"firstDate":1622030400000,"name":"_Impfzentrum Horgen","secondDate":1624449600000},{"firstDate":1622721600000,"name":"_Impfzentrum Affoltern","secondDate":1625486400000},{"firstDate":1622721600000,"name":"_Impfzentrum Messe Z\u00fcrich","secondDate":1625140800000},{"firstDate":1622808000000,"name":"_Impfzentrum Dietikon","secondDate":1625227200000}],"refresh_interval_sec":600,"source":"https://github.com/golonzovsky/vacme-zurich-parser","vaccination_group":"N"}
 
     useEffect(() => {
         async function fetchData() {
@@ -41,18 +41,19 @@ function App() {
         longitude: 8.540479916024365,
         zoom: 11
     });
-    const onSelectLocation = useCallback((locationName) => {
+    const onSelectLocation = useCallback((location) => {
+        console.log("on select", location)
         let locationByName = Object.fromEntries(
             locations_mapping.map(e => [e.name, e])
         )
 
-        if (!(locationName in locationByName)) {
+        if (!(location.name in locationByName)) {
             //todo report event of lookup table entry miss to mothership
-            console.log("map lookup per entry filed", locationName)
+            console.log("map lookup per entry filed", location.name)
             return
         }
 
-        let selectedLocation = locationByName[locationName];
+        let selectedLocation = locationByName[location.name];
 
         setViewport({
             longitude: selectedLocation.longitude,
@@ -62,8 +63,15 @@ function App() {
             transitionDuration: 'auto'
         });
 
-        setPopupInfo(selectedLocation);
+        setPopupInfo({
+            ...location,
+            ...selectedLocation
+        });
     }, []);
+
+    const formatDate = (date) => {
+        return moment(date).format("DD MMMM YYYY")
+    };
 
     return (
         <Layout style={{minHeight: "100vh"}}>
@@ -91,6 +99,10 @@ function App() {
                                     onClose={setPopupInfo}
                                 >
                                     <a href={popupInfo.link}>{popupInfo.name}</a>
+                                    { popupInfo.firstDate ? <><br/>
+                                    1st dose: {formatDate(popupInfo.firstDate)} <br/>
+                                    2nd dose: {formatDate(popupInfo.secondDate)}</>
+                                        : ''}
                                 </Popup>
                             )}
                         </MapGL>
@@ -114,7 +126,7 @@ function LocationList(props) {
                 itemLayout="horizontal"
                 dataSource={locations}
                 renderItem={item => (
-                    <List.Item onClick={() => onSelectLocation(item.name)}>
+                    <List.Item onClick={() => onSelectLocation(item)} style={{cursor: 'pointer'}}>
                         <List.Item.Meta
                             avatar={<ScheduleOutlined style={{fontSize: '32px'}}/>}
                             title={item.name}
