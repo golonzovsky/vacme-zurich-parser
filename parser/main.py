@@ -114,6 +114,7 @@ def do_refresh_token():
 
 
 def update_token_secret(new_token):
+    # this is side effect of my deployment method, you might not need this
     body = {
         "metadata": {
             "annotations": {
