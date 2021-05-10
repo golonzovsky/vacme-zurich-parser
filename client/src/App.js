@@ -1,10 +1,10 @@
 import './App.css';
-import {Col, Empty, Layout, List, Row, Typography} from 'antd';
-import ReactMapGL from 'react-map-gl';
 import React, {useEffect, useState} from 'react';
-import axios from 'axios';
+import {Col, Empty, Layout, List, Row, Typography} from 'antd';
 import {ScheduleOutlined,} from '@ant-design/icons';
+import axios from 'axios';
 import moment from "moment";
+import Map from "./Map";
 
 const {Header, Content} = Layout;
 const {Title, Paragraph, Text} = Typography;
@@ -45,22 +45,6 @@ function App() {
     );
 }
 
-function Map() {
-    //todo fill with data
-    const [viewport, setViewport] = React.useState({
-        latitude: 47.377909732589615,
-        longitude: 8.540479916024365,
-        zoom: 12
-    });
-
-    return <ReactMapGL
-        {...viewport}
-        width="100%"
-        height="100%"
-        onViewportChange={(viewport) => setViewport(viewport)}
-    />
-}
-
 function LocationList(props) {
 
     const formatDate = (date) => {
@@ -68,7 +52,7 @@ function LocationList(props) {
     };
 
     return <div>
-        {props.locations.length ?
+        {props.locations && props.locations.length ?
             <List
                 itemLayout="horizontal"
                 dataSource={props.locations}
