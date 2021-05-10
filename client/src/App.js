@@ -1,10 +1,22 @@
 import './App.css';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {Col, Empty, Layout, List, Row, Typography} from 'antd';
 import {ScheduleOutlined,} from '@ant-design/icons';
 import axios from 'axios';
 import moment from "moment";
-import Map from "./Map";
+import Pins from "./Pins";
+import MapGL, {
+    Popup,
+    FlyToInterpolator,
+    NavigationControl,
+    FullscreenControl,
+    ScaleControl,
+    GeolocateControl
+} from 'react-map-gl';
+import mapboxgl from 'mapbox-gl';
+import locations_mapping from "./locationMapping";
+// eslint-disable-next-line import/no-webpack-loader-syntax
+mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
 
 const {Header, Content} = Layout;
 const {Title, Paragraph, Text} = Typography;
@@ -23,9 +35,35 @@ function App() {
         fetchData();
     }, [null]);
 
-    const onSelectLocation = (name) => {
+    const [popupInfo, setPopupInfo] = useState(null);
+    const [viewport, setViewport] = useState({
+        latitude: 47.377909732589615,
+        longitude: 8.540479916024365,
+        zoom: 11
+    });
+    const onSelectLocation = useCallback((locationName) => {
+        let locationByName = Object.fromEntries(
+            locations_mapping.map(e => [e.name, e])
+        )
 
-    }
+        if (!(locationName in locationByName)) {
+            //todo report event of lookup table entry miss to mothership
+            console.log("map lookup per entry filed", locationName)
+            return
+        }
+
+        let selectedLocation = locationByName[locationName];
+
+        setViewport({
+            longitude: selectedLocation.longitude,
+            latitude: selectedLocation.latitude,
+            zoom: 14,
+            transitionInterpolator: new FlyToInterpolator({speed: 1.2}),
+            transitionDuration: 'auto'
+        });
+
+        setPopupInfo(selectedLocation);
+    }, []);
 
     return (
         <Layout style={{minHeight: "100vh"}}>
@@ -40,7 +78,22 @@ function App() {
                         <Text type="secondary" style={{paddingTop: '15px', display: 'block'}}>Last refresh: {moment(data.last_refresh).fromNow()}</Text>
                     </Col>
                     <Col lg={{span: 18, offset: 0}} style={{minHeight: "100vh"}}>
-                        <Map/>
+                        <MapGL {...viewport} width="100%" height="100%" onViewportChange={(viewport) => setViewport(viewport)}>
+                            <Pins data={locations_mapping} onClick={setPopupInfo}/>
+
+                            {popupInfo && (
+                                <Popup
+                                    tipSize={5}
+                                    anchor="top"
+                                    longitude={popupInfo.longitude}
+                                    latitude={popupInfo.latitude}
+                                    closeOnClick={false}
+                                    onClose={setPopupInfo}
+                                >
+                                    <a href={popupInfo.link}>{popupInfo.name}</a>
+                                </Popup>
+                            )}
+                        </MapGL>
                     </Col>
                 </Row>
             </Content>
@@ -61,12 +114,11 @@ function LocationList(props) {
                 itemLayout="horizontal"
                 dataSource={locations}
                 renderItem={item => (
-                    <List.Item onClick={onSelectLocation(item.name)}>
+                    <List.Item onClick={() => onSelectLocation(item.name)}>
                         <List.Item.Meta
                             avatar={<ScheduleOutlined style={{fontSize: '32px'}}/>}
                             title={item.name}
-                            description={<>1 dose: {formatDate(item.firstDate)} <br/> 2
-                                dose: {formatDate(item.secondDate)}</>}
+                            description={<>1st dose: {formatDate(item.firstDate)} <br/> 2nd dose: {formatDate(item.secondDate)}</>}
                         />
                     </List.Item>
                 )}/>

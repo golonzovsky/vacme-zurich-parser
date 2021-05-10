@@ -1,16 +1,3 @@
-import React, {useEffect, useState, useCallback} from 'react';
-import MapGL, {
-    Popup,
-    FlyToInterpolator,
-    NavigationControl,
-    FullscreenControl,
-    ScaleControl,
-    GeolocateControl
-} from 'react-map-gl';
-import mapboxgl from 'mapbox-gl';
-import Pins from "./Pins";
-// eslint-disable-next-line import/no-webpack-loader-syntax
-mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
 
 const locations_mapping = [
     {'name': "Zürich, TopPharm Morgental Apotheke", 'latitude': 47.3437185858769,'longitude':  8.529828454511142, 'link': 'https://goo.gl/maps/8VFBvGnSGrZJLHW98'},
@@ -110,51 +97,4 @@ const locations_mapping = [
 
 ]
 
-function Map(props) {
-    const [popupInfo, setPopupInfo] = useState(null);
-    const [viewport, setViewport] = useState({
-        latitude: 47.377909732589615,
-        longitude: 8.540479916024365,
-        zoom: 11
-    });
-    const onSelectLocation = useCallback((locationName) => {
-        let locationByName = Object.fromEntries(
-            locations_mapping.map(e => [e.name, e])
-        )
-
-        if (!(locationName in locationByName)) {
-            //todo report event of lookup table entry miss
-            console.log("map lookup per entry filed. reporting to mothership..")
-            return
-        }
-
-        let selectedLocation = locationByName[locationName];
-
-        setViewport({
-            longitude: selectedLocation.longitude,
-            latitude: selectedLocation.latitude,
-            zoom: 11,
-            transitionInterpolator: new FlyToInterpolator({speed: 1.2}),
-            transitionDuration: 'auto'
-        });
-    }, []);
-
-    return <MapGL {...viewport} width="100%" height="100%" onViewportChange={(viewport) => setViewport(viewport)}>
-        <Pins data={locations_mapping} onClick={setPopupInfo}/>
-
-        {popupInfo && (
-            <Popup
-                tipSize={5}
-                anchor="top"
-                longitude={popupInfo.longitude}
-                latitude={popupInfo.latitude}
-                closeOnClick={false}
-                onClose={setPopupInfo}
-            >
-                <a href={popupInfo.link}>{popupInfo.name}</a>
-            </Popup>
-        )}
-    </MapGL>
-}
-
-export default Map
+export default locations_mapping
