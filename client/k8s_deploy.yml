@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vacme-ui
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: vacme-ui
+  template:
+    metadata:
+      labels:
+        app: vacme-ui
+    spec:
+      containers:
+        - name: vacme-parser
+          image: golonzovsky/vacme-parser-ui:latest
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vacme-ui
+spec:
+  ports:
+    - name: api
+      port: 80
+      targetPort: 80
+  selector:
+    app: vacme-ui
+  type: ClusterIP

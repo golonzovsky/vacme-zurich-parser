@@ -117,7 +117,7 @@ def update_token_secret(new_token):
     body = {
         "metadata": {
             "annotations": {
-                "vacme/last-update": dt.datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+                "vacme/last-update": dt.datetime.now().strftime("%d/%m/%Y, %H:%M:%S")
             }
         },
         "data": {
@@ -138,9 +138,9 @@ def fetch_location_with_available_first_appointment(locations):
                 'locationId': location['id'],
                 'name': location['name'],
                 'nextDate': resp['nextDate'],
-                'nextDateParsed': parse_date(resp['nextDate'])
+                'nextDateMillis': parse_date_to_milli(resp['nextDate'])
             })
-    next_first_date_locations.sort(key=lambda x: x['nextDateParsed'])
+    next_first_date_locations.sort(key=lambda x: x['nextDateMillis'])
     logging.info("found %s first appointments", len(next_first_date_locations))
     return next_first_date_locations
 
@@ -151,16 +151,21 @@ def fetch_locations_with_both_appointments(locations):
         resp = do_request_second_appointment(next['locationId'], next['nextDate'])
         if resp != '':
             available = {'name': next['name'],
-                         'firstDate': next['nextDateParsed'],
-                         'secondDate': parse_date(resp['nextDate'])}
+                         'firstDate': next['nextDateMillis'],
+                         'secondDate': parse_date_to_milli(resp['nextDate'])
+                         }
             logging.info("found location with both available: %s %s", next['name'], available)
             next_second_locations.append(available)
     logging.info("found %s locations with both appointments", len(next_second_locations))
     return next_second_locations
 
 
-def parse_date(st):
-    return dt.datetime.strptime(st, '%Y-%m-%dT%H:%M:%S')
+def parse_date_to_milli(st):
+    return int(dt.datetime.strptime(st, '%Y-%m-%dT%H:%M:%S').timestamp() * 1000)
+
+
+def now_millis():
+    return int(dt.datetime.now().timestamp() * 1000)
 
 
 def update_caches():
@@ -172,7 +177,7 @@ def update_caches():
     both = fetch_locations_with_both_appointments(first)
 
     cache['locations'] = both
-    cache['last_refresh'] = dt.datetime.now()
+    cache['last_refresh'] = now_millis()
 
     logging.info(cache)
 

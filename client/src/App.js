@@ -1,38 +1,41 @@
 import './App.css';
-import {Col, Empty, Layout, Row, Typography, List, Avatar} from 'antd';
+import {Col, Empty, Layout, List, Row, Typography} from 'antd';
 import ReactMapGL from 'react-map-gl';
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
+import {ScheduleOutlined,} from '@ant-design/icons';
+import moment from "moment";
 
 const {Header, Content} = Layout;
 const {Title, Paragraph, Text} = Typography;
 
 function App() {
     const [data, setData] = useState({locations: []});
-    const dummyData = {"last_refresh":"Mon, 10 May 2021 15:34:51 GMT","locations":[{"firstDate":"Wed, 12 May 2021 12:00:00 GMT","name":"_Impfzentrum Meilen","secondDate":"Thu, 10 Jun 2021 12:00:00 GMT"},{"firstDate":"Fri, 14 May 2021 12:00:00 GMT","name":"_Impfzentrum Dietikon","secondDate":"Fri, 11 Jun 2021 12:00:00 GMT"}],"refresh_interval_sec":600,"source":"https://github.com/golonzovsky/vacme-zurich-parser","vaccination_group":"N"}
 
-    useEffect( () => {
-        async function fetchData(){
-            //const result = await axios(
-            //    '/api',
-            //);
-            //setData(result.data);
-            //console.log(result)
 
-            setData(dummyData)
+    useEffect(() => {
+        async function fetchData() {
+            const result = await axios(
+                '/api',
+            );
+            setData(result.data);
         }
+
         fetchData();
     }, [null]);
 
     return (
-        <Layout style={{minHeight: "100vh"}} >
-            <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
+        <Layout style={{minHeight: "100vh"}}>
+            <Header style={{position: 'fixed', zIndex: 1, width: '100%'}}>
                 <Title level={2} style={{color: 'white', paddingTop: '12px'}}>zh.vacme.ch appointments</Title>
             </Header>
-            <Content >
+            <Content>
                 <Row>
                     <Col lg={{span: 6, offset: 0}} style={{minHeight: "100vh", padding: '30px'}}>
-                        <LocationList locations={data.locations} last_refresh={data.last_refresh}/>
+                        <Title level={3} style={{paddingTop: '50px'}}>Available slots for group N:</Title>
+                        <LocationList locations={data.locations}/>
+                        <Text type="secondary" style={{paddingTop: '15px', display: 'block'}}>Last
+                            refresh {moment(data.last_refresh).fromNow()}</Text>
                     </Col>
                     <Col lg={{span: 18, offset: 0}} style={{minHeight: "100vh"}}>
                         <Map/>
@@ -59,8 +62,12 @@ function Map() {
 }
 
 function LocationList(props) {
+
+    const formatDate = (date) => {
+        return moment(date).format("DD MMMM YYYY")
+    };
+
     return <div>
-        <Title level={3}>last refresh {props.last_refresh}</Title>
         {props.locations.length ?
             <List
                 itemLayout="horizontal"
@@ -68,14 +75,14 @@ function LocationList(props) {
                 renderItem={item => (
                     <List.Item>
                         <List.Item.Meta
-                            avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-                            title={<a href="https://ant.design">{item.title}</a>}
-                            description={item.name}
+                            avatar={<ScheduleOutlined style={{fontSize: '32px'}}/>}
+                            title={item.name}
+                            description={<>1 dose: {formatDate(item.firstDate)} <br/> 2
+                                dose: {formatDate(item.secondDate)}</>}
                         />
                     </List.Item>
                 )}/>
             : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={'No locations available'}/>}
-
     </div>
 }
 

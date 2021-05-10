@@ -1,0 +1,47 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vacme-parser
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    cert-manager.io/issuer: "letsencrypt-prod"
+    #nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - host: vacme.kloud.top
+      http:
+        paths:
+          - backend:
+              service:
+                name: vacme-parser
+                port:
+                  name: api
+            path: /api/
+            pathType: Prefix
+          - backend:
+              service:
+                name: vacme-ui
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - vacme.kloud.top
+      secretName: vacme-tls
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: alex.golonzovsky@gmail.com
+    privateKeySecretRef:
+      name: letsencrypt-prod-http-key
+    solvers:
+      - http01:
+          ingress:
+            class:  nginx

@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vacme-parser
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vacme-parser
+  template:
+    metadata:
+      labels:
+        app: vacme-parser
+    spec:
+      serviceAccountName: vacme-parser
+      containers:
+        - name: vacme-parser
+          image: golonzovsky/vacme-parser:latest
+          env:
+            - name: REFRESH_INTERVAL_SEC
+              value: '600'
+            - name: REGISTRATION_ID
+              valueFrom:
+                secretKeyRef:
+                  key: registration_id
+                  name: vacme-parser
+            - name: REFRESH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: refresh_token
+                  name: vacme-parser
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vacme-parser
+spec:
+  ports:
+    - name: api
+      port: 5000
+      targetPort: 5000
+  selector:
+    app: vacme-parser
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: vacme-parser
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: vacme-parser
+rules:
+  - apiGroups: [""]
+    resources:
+      - secrets
+    verbs:
+      - patch
+      - update
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: vacme-parser
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: vacme-parser
+subjects:
+  - kind: ServiceAccount
+    name: vacme-parser
+
