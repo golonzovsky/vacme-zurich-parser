@@ -15,7 +15,7 @@ app = Flask(__name__)
 app_config = {
     'refresh_token': os.getenv("REFRESH_TOKEN"),
     'registration_id': os.getenv("REGISTRATION_ID"),
-    'refresh_interval_sec': int(os.getenv("REFRESH_INTERVAL_SEC", 60))
+    'refresh_interval_sec': int(os.getenv("REFRESH_INTERVAL_SEC", 60)),
 }
 
 headers = {
@@ -39,7 +39,8 @@ all_locations = {
     'locations': []
 }
 
-k8s_API = {}
+running_in_k8s_cluster = False
+
 
 def do_request_first_appointment(id):
     resp = requests.post('https://zh.vacme.ch/api/v1/reg/dossier/termine/nextfrei/{}/ERSTE_IMPFUNG'.format(id),
@@ -101,7 +102,7 @@ def do_refresh_token():
         sys.exit("Cannot recover token")
 
     if resp.headers['content-type'] == 'text/html':
-        logging.error("token refresh require captcha %s %s", resp.status_code, resp.headers['content-type'])
+        logging.error("token refresh require captcha to be solved. Open https://zh.vacme.ch in your browser. (token response content-type:text/html)")
         sys.exit("Please enter captcha. Exiting.")
 
     resp_json = resp.json()
@@ -114,7 +115,9 @@ def do_refresh_token():
 
 
 def update_token_secret(new_token):
-    # this is side effect of my deployment method, you might not need this
+    if not running_in_k8s_cluster:
+        return
+
     body = {
         "metadata": {
             "annotations": {
@@ -201,8 +204,9 @@ if __name__ == "__main__":
 
     try:
         config.load_incluster_config()
+        running_in_k8s_cluster = True
     except Exception:
-        config.load_kube_config()
+        logging.info("Running out of cluster, secret updates disabled")
 
     logging.info("Starting vacme parser")
     update_caches()
