@@ -16,7 +16,7 @@ Currently, deployed to https://vacme.kloud.top with refresh interval 10 min and 
 
 Stay safe ;)
 
-UPD: I've found similar service `https://rimpfli.web.app/` - check it out well. It has Bern in addition to Zurich and notifications! 
+UPD: I've found similar service `https://rimpfli.web.app/` - check it out as well. It has Bern in addition to Zurich and notifications! 
 
 ## todo
 - [ ] fix map in UI
