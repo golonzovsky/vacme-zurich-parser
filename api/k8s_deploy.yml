@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vacme-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: vacme-api
+  template:
+    metadata:
+      labels:
+        app: vacme-api
+    spec:
+      containers:
+        - image: golonzovsky/vacme-api
+          name: debug
+          ports:
+            - containerPort: 8000
+              name: http
+          livenessProbe:
+            httpGet:
+              port: 8000
+              path: /health
+          readinessProbe:
+            httpGet:
+              port: 8000
+              path: /health
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: loghttp-debug
+spec:
+  ports:
+    - port: 8000
+  selector:
+    app: vacme-api
