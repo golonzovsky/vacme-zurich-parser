@@ -139,7 +139,7 @@ function Map(props) {
         });
     }, []);
 
-    return <ReactMapGL{...viewport} width="100%" height="100%" onViewportChange={(viewport) => setViewport(viewport)}>
+    return <MapGL {...viewport} width="100%" height="100%" onViewportChange={(viewport) => setViewport(viewport)}>
         <Pins data={locations_mapping} onClick={setPopupInfo}/>
 
         {popupInfo && (
@@ -154,7 +154,7 @@ function Map(props) {
                 <a href={popupInfo.link}>{popupInfo.name}</a>
             </Popup>
         )}
-    </ReactMapGL>
+    </MapGL>
 }
 
 export default Map
