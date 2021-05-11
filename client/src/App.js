@@ -7,6 +7,7 @@ import Pins from "./Pins";
 import MapGL, {FlyToInterpolator, Popup} from 'react-map-gl';
 import locations_mapping from "./locationMapping.json";
 import LocationList from "./LocationList";
+import GithubRibbon from "./GithubRibbon";
 
 import mapboxgl from 'mapbox-gl';
 // eslint-disable-next-line import/no-webpack-loader-syntax
@@ -96,6 +97,7 @@ function App() {
         <Layout style={{minHeight: "100vh"}}>
             <Header style={{position: 'fixed', zIndex: 1, width: '100%'}}>
                 <Title level={2} className="main-header">zh.vacme.ch appointments</Title>
+                <GithubRibbon/>
             </Header>
             <Content>
                 <Row>
