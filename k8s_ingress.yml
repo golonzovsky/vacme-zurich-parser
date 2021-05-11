@@ -6,7 +6,6 @@ metadata:
     kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     cert-manager.io/issuer: "letsencrypt-prod"
-    #nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   rules:
     - host: vacme.kloud.top
@@ -38,7 +37,6 @@ metadata:
 spec:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
-    email: alex.golonzovsky@gmail.com
     privateKeySecretRef:
       name: letsencrypt-prod-http-key
     solvers:
