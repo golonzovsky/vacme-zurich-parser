@@ -79,7 +79,7 @@ def fetch_all_locations():
         return
 
     resp = resp_full.json()
-    logging.info("found %s locations", len(resp))
+    logging.info("found %s possible locations", len(resp))
     all_locations['locations'] = resp
     return resp
 
@@ -92,10 +92,6 @@ def ensure_token():
     account_resp = requests.get('https://zh.vacme.ch/auth/realms/vacme/account', headers=headers)
     if account_resp.status_code == 401:
         do_refresh_token()
-        account_resp = requests.get('https://zh.vacme.ch/auth/realms/vacme/account', headers=headers)
-        if account_resp.status_code == 401:
-            logging.error("token refresh failed. cannot recover, exiting")
-            sys.exit("Cannon recover token")
 
 
 def do_refresh_token():
@@ -111,8 +107,8 @@ def do_refresh_token():
         sys.exit("Cannot recover token")
 
     if resp.headers['content-type'] == 'text/html':
-        logging.error(
-            "token refresh require captcha to be solved. Open https://zh.vacme.ch in your browser. (token response content-type:text/html)")
+        logging.error('token refresh require captcha to be solved.'
+                      'Open https://zh.vacme.ch in your browser. (token response content-type:text/html)')
         sys.exit("Please enter captcha. Exiting.")
 
     resp_json = resp.json()
