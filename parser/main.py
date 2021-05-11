@@ -1,10 +1,11 @@
+import base64
+import datetime as dt
 import logging
 import os
-import sys
-import datetime as dt
-import requests
+
 import atexit
-import base64
+import requests
+import sys
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask
 from flask import jsonify
@@ -42,34 +43,42 @@ all_locations = {
 running_in_k8s_cluster = False
 
 
-def do_request_first_appointment(id):
-    resp = requests.post('https://zh.vacme.ch/api/v1/reg/dossier/termine/nextfrei/{}/ERSTE_IMPFUNG'.format(id),
+def do_request_first_appointment(location_id):
+    resp = requests.post('https://zh.vacme.ch/api/v1/reg/dossier/termine/nextfrei/{}/ERSTE_IMPFUNG'.format(location_id),
                          headers=headers)
     if resp.status_code == 200:
         return resp.json()
     elif resp.status_code == 204:
         return ''
     else:
-        logging.error("unexpected response doRequestFirstPerId %s", resp.status_code)
+        logging.error("unexpected response do_request_first_appointment %s", resp.status_code)
         return ''
 
 
-def do_request_second_appointment(id, nextDate):
-    data = '{"nextDate": "%s"}' % nextDate
-    resp = requests.post('https://zh.vacme.ch/api/v1/reg/dossier/termine/nextfrei/{}/ZWEITE_IMPFUNG'.format(id),
-                         headers=headers, data=data)
+def do_request_second_appointment(location_id, next_date):
+    data = '{"nextDate": "%s"}' % next_date
+    resp = requests.post(
+        'https://zh.vacme.ch/api/v1/reg/dossier/termine/nextfrei/{}/ZWEITE_IMPFUNG'.format(location_id),
+        headers=headers, data=data)
+
     if resp.status_code == 200:
         return resp.json()
     elif resp.status_code == 204:
         return ''
     else:
-        logging.error("unexpected response doRequestFirstPerId %s", resp.status_code)
+        logging.error("unexpected response do_request_second_appointment %s", resp.status_code)
         return ''
 
 
 def fetch_all_locations():
-    resp = requests.get('https://zh.vacme.ch/api/v1/reg/dossier/odi/all/{}'.format(app_config['registration_id']),
-                        headers=headers).json()
+    resp_full = requests.get('https://zh.vacme.ch/api/v1/reg/dossier/odi/all/{}'.format(app_config['registration_id']),
+                             headers=headers)
+
+    if resp_full.headers['content-type'] != 'application/json':
+        logging.error("unexpected response fetch_all_locations %s", resp_full)
+        return
+
+    resp = resp_full.json()
     logging.info("found %s locations", len(resp))
     all_locations['locations'] = resp
     return resp
@@ -102,14 +111,16 @@ def do_refresh_token():
         sys.exit("Cannot recover token")
 
     if resp.headers['content-type'] == 'text/html':
-        logging.error("token refresh require captcha to be solved. Open https://zh.vacme.ch in your browser. (token response content-type:text/html)")
+        logging.error(
+            "token refresh require captcha to be solved. Open https://zh.vacme.ch in your browser. (token response content-type:text/html)")
         sys.exit("Please enter captcha. Exiting.")
 
     resp_json = resp.json()
     new_refresh_token = resp_json['refresh_token']
     app_config['refresh_token'] = new_refresh_token
     headers['Authorization'] = 'Bearer {}'.format(resp_json['access_token'])
-    logging.info("update access token successful, expires in %s; refresh expires in %s. %s", resp_json['expires_in'], resp_json['refresh_expires_in'],
+    logging.info("update access token successful, expires in %s; refresh expires in %s. %s", resp_json['expires_in'],
+                 resp_json['refresh_expires_in'],
                  new_refresh_token)
     update_token_secret(new_refresh_token)
 
@@ -176,11 +187,12 @@ def update_caches():
     logging.info("update caches")
 
     ensure_token()
-    all_locations = fetch_all_locations()
-    first = fetch_location_with_available_first_appointment(all_locations)
-    both = fetch_locations_with_both_appointments(first)
 
-    cache['locations'] = both
+    all_locations_resp = fetch_all_locations()
+    first_available = fetch_location_with_available_first_appointment(all_locations_resp)
+    both_available = fetch_locations_with_both_appointments(first_available)
+
+    cache['locations'] = both_available
     cache['last_refresh'] = now_millis()
 
     logging.info(cache)

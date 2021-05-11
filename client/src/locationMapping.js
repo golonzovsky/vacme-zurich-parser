@@ -91,6 +91,7 @@ const locations_mapping = [
     {'name': "Zürich, Apotheke zum Mörser GmbH", 'latitude': 47.40348476507494,'longitude':  8.589121114030492, 'link': 'https://goo.gl/maps/J4xbgjqXcY1g7pka9'},
     {'name': "Zürich, Medbase Apotheke Zürich Niederdorf", 'latitude': 47.37345396282333, 'longitude':  8.543715844713024, 'link': 'https://goo.gl/maps/bvpTtJKgSdSX8ERj6'},
     {'name': "Uster, Coop Vitality Apotheke Uster", 'latitude': 47.350177834404036, 'longitude': 8.717004106078576, 'link': 'https://goo.gl/maps/brTybaDfz1U53uWD9'},
+    {'name': "Zürich, Medbase Apotheke Zürich Rotbuch", 'latitude': 47.393191556249626, 'longitude': 8.528743303582017, 'link': 'https://goo.gl/maps/3Yv41yDoZP3Pmoks9'},
     //{'name': "Apotheke im KSW AG", 'latitude': 47.3,'longitude':  8.55, 'link': ''},
     //{'name': "Zürich, Apotheke Affoltern", 'latitude': 47.3,'longitude':  8.55, 'link': ''},
 
