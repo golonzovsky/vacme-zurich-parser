@@ -1,6 +1,6 @@
 controller:
   ingressClass: "nginx"
-  minAvailable: "2"
+  replicaCount: "2"
   service:
     loadBalancerIP: ${ip_address_public}
     internal:
