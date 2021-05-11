@@ -116,9 +116,8 @@ def do_refresh_token():
     new_refresh_token = resp_json['refresh_token']
     app_config['refresh_token'] = new_refresh_token
     headers['Authorization'] = 'Bearer {}'.format(resp_json['access_token'])
-    logging.info("update access token successful, expires in %s; refresh expires in %s. %s", resp_json['expires_in'],
-                 resp_json['refresh_expires_in'],
-                 new_refresh_token)
+    logging.info("update access token successful, expires in %s; refresh expires in %s",
+                 resp_json['expires_in'], resp_json['refresh_expires_in'])
     update_token_secret(new_refresh_token)
 
 
