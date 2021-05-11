@@ -1,25 +1,18 @@
 import './App.css';
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Col, Empty, Layout, List, Row, Typography} from 'antd';
-import {ScheduleOutlined,} from '@ant-design/icons';
+import {ScheduleOutlined} from '@ant-design/icons';//GithubOutlined
 import axios from 'axios';
 import moment from "moment";
 import Pins from "./Pins";
-import MapGL, {
-    Popup,
-    FlyToInterpolator,
-    NavigationControl,
-    FullscreenControl,
-    ScaleControl,
-    GeolocateControl
-} from 'react-map-gl';
+import MapGL, {FlyToInterpolator, Popup} from 'react-map-gl';
 import mapboxgl from 'mapbox-gl';
 import locations_mapping from "./locationMapping";
 // eslint-disable-next-line import/no-webpack-loader-syntax
 mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
 
 const {Header, Content} = Layout;
-const {Title, Paragraph, Text} = Typography;
+const {Title, Text} = Typography;
 
 function App() {
     const [enhancedLocations, setEnhancedLocations] = useState([]);
@@ -35,7 +28,7 @@ function App() {
             enhanceLocationsMappingWithActive(result);
         }
         fetchData();
-    }, [null]);
+    }, []);
 
     function enhanceLocationsMappingWithActive(result) {
         //result = {'data': dummyData}
