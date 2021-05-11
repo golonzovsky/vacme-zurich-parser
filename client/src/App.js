@@ -1,13 +1,13 @@
 import './App.css';
 import React, {useCallback, useEffect, useState} from 'react';
-import {Col, Empty, Layout, List, Row, Typography} from 'antd';
-import {ScheduleOutlined} from '@ant-design/icons';//GithubOutlined
+import {Col, Layout, Row, Typography} from 'antd';
 import axios from 'axios';
 import moment from "moment";
 import Pins from "./Pins";
 import MapGL, {FlyToInterpolator, Popup} from 'react-map-gl';
 import mapboxgl from 'mapbox-gl';
 import locations_mapping from "./locationMapping";
+import LocationList from "./LocationList";
 // eslint-disable-next-line import/no-webpack-loader-syntax
 mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
 
@@ -129,31 +129,6 @@ function App() {
             </Content>
         </Layout>
     );
-}
-
-function LocationList(props) {
-    const {locations, onSelectLocation} = props;
-
-    const formatDate = (date) => {
-        return moment(date).format("DD MMMM YYYY")
-    };
-
-    return <div>
-        {locations && locations.length ?
-            <List
-                itemLayout="horizontal"
-                dataSource={locations}
-                renderItem={item => (
-                    <List.Item onClick={() => onSelectLocation(item)} style={{cursor: 'pointer'}}>
-                        <List.Item.Meta
-                            avatar={<ScheduleOutlined style={{fontSize: '32px'}}/>}
-                            title={item.name}
-                            description={<>1st dose: {formatDate(item.firstDate)} <br/> 2nd dose: {formatDate(item.secondDate)}</>}
-                        />
-                    </List.Item>
-                )}/>
-            : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={'No locations available'}/>}
-    </div>
 }
 
 export default App;
