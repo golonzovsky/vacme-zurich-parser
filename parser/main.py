@@ -74,7 +74,7 @@ def fetch_all_locations():
     resp_full = requests.get('https://zh.vacme.ch/api/v1/reg/dossier/odi/all/{}'.format(app_config['registration_id']),
                              headers=headers)
 
-    if resp_full.headers['content-type'] != 'application/json':
+    if resp_full.headers.get('content-type') != 'application/json':
         logging.error("unexpected response fetch_all_locations %s", resp_full)
         return
 
@@ -106,7 +106,7 @@ def do_refresh_token():
         logging.error("token refresh failed: %s. cannot recover, exiting", resp.status_code)
         sys.exit("Cannot recover token")
 
-    if resp.headers['content-type'] == 'text/html':
+    if resp.headers.get('content-type') == 'text/html':
         logging.error('token refresh require captcha to be solved.'
                       'Open https://zh.vacme.ch in your browser. (token response content-type:text/html)')
         sys.exit("Please enter captcha. Exiting.")
