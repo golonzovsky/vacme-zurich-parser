@@ -1,0 +1,14 @@
+controller:
+  ingressClass: "nginx"
+  minAvailable: "2"
+  service:
+    loadBalancerIP: ${ip_address_public}
+    internal:
+      enabled: true
+      annotations:
+        cloud.google.com/load-balancer-type: "Internal"
+      loadBalancerIP: ${ip_address_private}
+
+defaultBackend:
+  service:
+    omitClusterIP: "true"

@@ -96,7 +96,7 @@ resource "helm_release" "nginx_ingress" {
 
   values = [
     templatefile(
-      "${path.module}/helm_values/ingress-helm-values.yml",
+      "${path.module}/ingress-helm-values.yml",
     { 
       ip_address_private : google_compute_address.nginx_ingress_private.address,
       ip_address_public : google_compute_address.nginx_ingress_public.address,
