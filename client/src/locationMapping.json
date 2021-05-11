@@ -1,9 +1,4 @@
-
-// curl https://vacme.kloud.top/api/locations | jq ".locations | .[]| .name" | sort > names_fetched.txt
-// cat locationMapping.json | jq ".locations | .[] | .name" | sort > names_mapped.txt
-// diff names_fetched.txt names_mapped.txt
-
-const locations_mapping = [
+[
     {"name": "Zürich, TopPharm Morgental Apotheke", "latitude": 47.3437185858769,"longitude":  8.529828454511142, "link": "https://goo.gl/maps/8VFBvGnSGrZJLHW98"},
     {"name": "Zürich, Apotheke Kirche Fluntern", "latitude": 47.376437590746185,"longitude":  8.559069364309437, "link": "https://goo.gl/maps/tU66ABCKzmhidS1J6"},
     {"name": "Affoltern, Amavita Apotheke Affoltern a. A.", "latitude": 47.27729486909392,"longitude":  8.44968738334539, "link": "https://g.page/amavita-affoltern-am-albis"},
@@ -96,9 +91,10 @@ const locations_mapping = [
     {"name": "Zürich, Medbase Apotheke Zürich Niederdorf", "latitude": 47.37345396282333, "longitude":  8.543715844713024, "link": "https://goo.gl/maps/bvpTtJKgSdSX8ERj6"},
     {"name": "Uster, Coop Vitality Apotheke Uster", "latitude": 47.350177834404036, "longitude": 8.717004106078576, "link": "https://goo.gl/maps/brTybaDfz1U53uWD9"},
     {"name": "Zürich, Medbase Apotheke Zürich Rotbuch", "latitude": 47.393191556249626, "longitude": 8.528743303582017, "link": "https://goo.gl/maps/3Yv41yDoZP3Pmoks9"},
-    {'name': "Apotheke im KSW AG", 'latitude': 47.50734501403949, 'longitude':  8.727306176373228, 'link': 'https://g.page/apotheke-im-ksw'},
-    //{'name': "Zürich, Apotheke Affoltern", 'latitude': ,'longitude':  , 'link': ''},
+    {"name": "Apotheke im KSW AG", "latitude": 47.50734501403949, "longitude":  8.727306176373228, "link": "https://g.page/apotheke-im-ksw"},
+    {"name": "Opfikon, Coop Vitality Apotheke Opfikon", "latitude": 47.424027090363246, "longitude":  8.562429664949091, "link": "https://goo.gl/maps/1wK5DdLJkyb7cUsD8"},
+    {"name": "Winterthur, Bahnhof Apotheke", "latitude": 47.49960507384176, "longitude":  8.723552218927244, "link": "https://goo.gl/maps/DMeWfLLgd6zwSYUX6"},
+    {"name": "Meilen, TopPharm Apotheke & Parfumerie Dr. Rebhan AG", "latitude": 47.26842446262128, "longitude":  8.645429456357533, "link": "https://goo.gl/maps/B4XV1tGoUe79s5UY7"},
+    {"name": "Zürich-Flughafen, Amavita Apotheke Zürich Flughafen", "latitude": 47.45123126981944, "longitude":  8.562903011623115, "link": "https://g.page/amavita-flughafen"}
 
 ]
-
-export default locations_mapping

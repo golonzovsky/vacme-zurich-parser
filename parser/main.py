@@ -75,8 +75,7 @@ def fetch_all_locations():
                              headers=headers)
 
     if resp_full.headers.get('content-type') != 'application/json':
-        logging.error("unexpected response fetch_all_locations status:%s headers:$s body:%s",
-                      resp_full.status_code, jsonify(resp_full.headers), resp_full.text)
+        logging.error("unexpected response fetch_all_locations status:%s", resp_full.status_code)
         return
 
     resp = resp_full.json()
