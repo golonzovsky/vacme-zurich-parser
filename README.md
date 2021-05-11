@@ -1,7 +1,7 @@
 # vacme-zurich-parser
 
 https://zh.vacme.ch provides a way to register for vaccination in Zurich. Since there is not much free slots - its quite tedious to find available one. You need to click dozens of locations.   
-Probably website was designed in this way to support vaccines with 1 injection as well, but its hard to use for 2 dose usual case. Since 2 vaccines are approved in Switzerland, both appointments must be in same clinic.
+Probably website was designed in this way to support vaccines with 1 injection as well, but its hard to use for 2 dose usual case. Since 2 types of vaccines are approved in Switzerland, both appointments must be in same clinic.
 
 This tries to simplify search by exposing rest api and UI with up to date available slots for vaccination in Zurich.  
 Be aware is uses personal refresh token for existing registration and reverse engineered api, so its all quite fragile.  
