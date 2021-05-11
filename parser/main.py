@@ -75,7 +75,8 @@ def fetch_all_locations():
                              headers=headers)
 
     if resp_full.headers.get('content-type') != 'application/json':
-        logging.error("unexpected response fetch_all_locations status:%s body:%s", resp_full.status_code, resp_full.text)
+        logging.error("unexpected response fetch_all_locations status:%s headers:$s body:%s",
+                      resp_full.status_code, jsonify(resp_full.headers), resp_full.text)
         return
 
     resp = resp_full.json()
@@ -138,10 +139,10 @@ def update_token_secret(new_token):
     client.CoreV1Api().patch_namespaced_secret("vacme-parser", "vacme", body, pretty=True)
 
 
-def fetch_location_with_available_first_appointment(locations):
+def fetch_location_with_available_first_appointment():
     next_first_date_locations = []
 
-    for location in locations:
+    for location in all_locations['locations']:
         resp = do_request_first_appointment(location['id'])
         if resp != '':
             logging.info("found first location: %s %s", location['name'], resp)
@@ -184,8 +185,8 @@ def update_caches():
 
     ensure_token()
 
-    all_locations_resp = fetch_all_locations()
-    first_available = fetch_location_with_available_first_appointment(all_locations_resp)
+    fetch_all_locations()
+    first_available = fetch_location_with_available_first_appointment()
     both_available = fetch_locations_with_both_appointments(first_available)
 
     cache['locations'] = both_available
