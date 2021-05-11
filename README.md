@@ -85,10 +85,10 @@ docker run --rm -it -e REGISTRATION_ID=? -e REFRESH_TOKEN=? golonzovsky/vacme-pa
 or run python code directly.
 
 ## cloud deployment
-if you want to run it in the cluster - sometimes api starts to redirect into captcha. AFAIK once its solved IP is added, and you can call apis.  
+In case you want to run it in the cloud - sometimes api starts to redirect into captcha. AFAIK once captcha is solved - IP is added, and you can call vacme again.  
 
-If you run in k8s - you need to make your cluster with private nodes and create NAT.. Then you need to solve captcha from your NAT ip using socks proxy. Example to create local SOCKS proxy from GKE node:
+If you run in k8s - you need to hide your nodes behind NAT. Then you can to solve captcha from behind NAT ip using socks proxy. Example to create local SOCKS proxy from private GKE node:
 ```
-gcloud beta compute ssh --zone "europe-west6-a" "gke-main-preemptible-e2-medium-3b140cfc-wv1s" --tunnel-through-iap --project "?????" -- -N -p 22 -D localhost:5000
+gcloud beta compute ssh --zone "europe-west6-a" "gke-main-preemptible-e2-medium-3b140cfc-wv1s" --tunnel-through-iap -- -N -p 22 -D localhost:5000
 ```
-UPD: added all infra code, see https://github.com/golonzovsky/vacme-zurich-parser/tree/main/infrastructure folder. Its terraform definitions of GKE cluster running in GCP. 
+UPD: added all infra code, see https://github.com/golonzovsky/vacme-zurich-parser/tree/main/infrastructure folder. Its terraform definitions of GKE cluster and things around running in GCP. 
