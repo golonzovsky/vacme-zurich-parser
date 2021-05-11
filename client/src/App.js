@@ -5,9 +5,10 @@ import axios from 'axios';
 import moment from "moment";
 import Pins from "./Pins";
 import MapGL, {FlyToInterpolator, Popup} from 'react-map-gl';
-import mapboxgl from 'mapbox-gl';
-import locations_mapping from "./locationMapping";
+import locations_mapping from "./locationMapping.json";
 import LocationList from "./LocationList";
+
+import mapboxgl from 'mapbox-gl';
 // eslint-disable-next-line import/no-webpack-loader-syntax
 mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
 
@@ -43,7 +44,7 @@ function App() {
         )
         let enhancedLocations = locations_mapping.map(location => {
             if (!(location.name in activeLocationsByName)) {
-                //todo report event of lookup table entry miss to mothership (or move all this to api)
+                //todo report event of lookup table entry miss to mothership (or move all of this location enhancements to api)
                 console.log("reverse map lookup per entry filed (active key from location mapping)", location.name)
                 return {...location, active: false}
             }
@@ -66,7 +67,7 @@ function App() {
         )
 
         if (!(location.name in locationByName)) {
-            //todo report event of lookup table entry miss to mothership (or move all this to api)
+            //todo report event of lookup table entry miss to mothership (or move all of this location enhancements to api)
             console.log("map lookup per entry filed", location.name)
             return
         }
@@ -94,14 +95,14 @@ function App() {
     return (
         <Layout style={{minHeight: "100vh"}}>
             <Header style={{position: 'fixed', zIndex: 1, width: '100%'}}>
-                <Title level={2} style={{color: 'white', paddingTop: '12px'}}>zh.vacme.ch appointments</Title>
+                <Title level={2} className="main-header">zh.vacme.ch appointments</Title>
             </Header>
             <Content>
                 <Row>
                     <Col lg={{span: 6, offset: 0}} style={{minHeight: "100vh", padding: '30px'}}>
                         <Title level={3} style={{paddingTop: '50px'}}>Available slots for group N:</Title>
                         <LocationList locations={data.locations} onSelectLocation={onSelectLocation}/>
-                        <Text type="secondary" style={{paddingTop: '15px', display: 'block'}}>Last refresh: {moment(data.last_refresh).fromNow()}</Text>
+                        <Text type="secondary" style={{paddingTop: '15px', display: 'block'}}>Last scan: {moment(data.last_refresh).fromNow()}</Text>
                     </Col>
                     <Col lg={{span: 18, offset: 0}} style={{minHeight: "100vh"}}>
                         <MapGL {...viewport} width="100%" height="100%" onViewportChange={(viewport) => setViewport(viewport)}>
