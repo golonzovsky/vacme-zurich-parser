@@ -42,7 +42,7 @@ function App() {
         )
         let enhancedLocations = locations_mapping.map(location => {
             if (!(location.name in activeLocationsByName)) {
-                //todo report event of lookup table entry miss to mothership
+                //todo report event of lookup table entry miss to mothership (or move all this to api)
                 console.log("reverse map lookup per entry filed (active key from location mapping)", location.name)
                 return {...location, active: false}
             }
@@ -65,7 +65,7 @@ function App() {
         )
 
         if (!(location.name in locationByName)) {
-            //todo report event of lookup table entry miss to mothership
+            //todo report event of lookup table entry miss to mothership (or move all this to api)
             console.log("map lookup per entry filed", location.name)
             return
         }
