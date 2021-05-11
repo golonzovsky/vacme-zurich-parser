@@ -92,6 +92,3 @@ If you run in k8s - you need to make your cluster with private nodes and create 
 gcloud beta compute ssh --zone "europe-west6-a" "gke-main-preemptible-e2-medium-3b140cfc-wv1s" --tunnel-through-iap --project "?????" -- -N -p 22 -D localhost:5000
 ```
 UPD: added all infra code, see https://github.com/golonzovsky/vacme-zurich-parser/tree/main/infrastructure folder. Its terraform definitions of GKE cluster running in GCP. 
-
-
-[]: https://rimpfli.web.app
