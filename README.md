@@ -14,6 +14,8 @@ Its was just jupiter experiment (see original `vaccination_search.ipynb`) wrappe
 
 Currently, deployed to https://vacme.kloud.top with refresh interval 10 min and with my account for group `N`.
 
+zh.vacme.ch is for Zurich only, please check other cantons on https://foph-coronavirus.ch/vaccination/when-can-i-be-vaccinated/#cantons 
+
 Stay safe! ;)
 
 UPD: I've found similar service https://rimpfli.web.app - check it out as well. It has Bern in addition to Zurich and notifications! 
