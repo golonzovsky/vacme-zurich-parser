@@ -75,7 +75,7 @@ def fetch_all_locations():
                              headers=headers)
 
     if resp_full.headers.get('content-type') != 'application/json':
-        logging.error("unexpected response fetch_all_locations status:%s", resp_full.status_code)
+        logging.error("unexpected response fetch_all_locations status:%s %s", resp_full.status_code, resp_full.text)
         return
 
     resp = resp_full.json()
@@ -142,6 +142,10 @@ def fetch_location_with_available_first_appointment():
     next_first_date_locations = []
 
     for location in all_locations['locations']:
+        if location['noFreieTermine']:
+            # skip prefiltered from server
+            continue
+
         resp = do_request_first_appointment(location['id'])
         if resp != '':
             logging.info("found first location: %s %s", location['name'], resp)
@@ -151,6 +155,7 @@ def fetch_location_with_available_first_appointment():
                 'nextDate': resp['nextDate'],
                 'nextDateMillis': parse_date_to_milli(resp['nextDate'])
             })
+
     next_first_date_locations.sort(key=lambda x: x['nextDateMillis'])
     logging.info("found %s first appointments", len(next_first_date_locations))
     return next_first_date_locations
