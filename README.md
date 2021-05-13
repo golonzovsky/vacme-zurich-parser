@@ -21,9 +21,11 @@ UPD: I've found similar service https://rimpfli.web.app - check it out as well. 
 
 ![ui screenshot](ui_example.png)
 
-## todo
+## possible todo
 - [ ] notifications in UI (?)
 - [ ] contact locations to get an info of which vaccine is in use there (?)
+- [ ] store/show statistics on slots per day etc
+- [ ] automatic SMS login (my twillio order is pending)
 
 ## API
 
@@ -54,25 +56,27 @@ List all locations (will cleanup fields) https://vacme.kloud.top/api/locations:
       "id": "00d65270-264f-469f-bdac-765d01d2b14c",
       "mobilerOrtDerImpfung": false,
       "name": "Zürich, TopPharm Morgental Apotheke",
+      "noFreieTermine": true,
       "terminverwaltung": true,
       "timestampErstellt": "2021-04-30T14:35:15",
-      "timestampMutiert": "2021-04-30T14:35:15",
+      "timestampMutiert": "2021-05-12T22:10:00",
       "userErstellt": "f7c43312-7245-429e-96b9-a615b989522a",
       "userMutiert": "f7c43312-7245-429e-96b9-a615b989522a",
-      "version": 0
+      "version": 1
     },
     {
-      "glnNummer": "7601001018372",
-      "id": "028b22f1-de6d-473c-bedf-b23fc3db17e3",
+      "glnNummer": "7601001368712",
+      "id": "02a43092-5990-44f7-9d28-2b7414668347",
       "mobilerOrtDerImpfung": false,
-      "name": "Zürich, Apotheke Kirche Fluntern",
+      "name": "Affoltern, Amavita Apotheke Affoltern a. A.",
+      "noFreieTermine": true,
       "terminverwaltung": true,
-      "timestampErstellt": "2021-04-30T13:59:13",
-      "timestampMutiert": "2021-04-30T13:59:13",
+      "timestampErstellt": "2021-04-30T09:23:32",
+      "timestampMutiert": "2021-05-12T22:10:00",
       "userErstellt": "f7c43312-7245-429e-96b9-a615b989522a",
       "userMutiert": "f7c43312-7245-429e-96b9-a615b989522a",
-      "version": 0
-    },
+      "version": 1
+    }
 ...
 ]}
 ```
