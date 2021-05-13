@@ -2,7 +2,7 @@
 
 https://zh.vacme.ch provides a way to register for vaccination in Zurich. Since there is not much free slots - its quite tedious to find available one. Recently dropdown was updated to filter not available ones, but unfortunately active options often dont have slots either.    
 
-This tries to simplify search by exposing rest api and UI with up to date available slots for vaccination in Zurich.  
+This service (https://vacme.kloud.top) tries to simplify search by exposing rest api and UI with up to date available slots for vaccination in Zurich.  
 Be aware is uses personal refresh token for existing registration and reverse engineered api, so its all quite fragile - any next update of vacme.ch can break it.  
 
 Main part if you want to reuse code is in `parser` folder. Its python app which periodically calls `zh.vacme.ch`, and exposes basic api for UI and caching layers.  
@@ -11,7 +11,7 @@ Its was just jupiter experiment (see original `vaccination_search.ipynb`) wrappe
 
 (If you are developing `zh.vacme.ch` and my requests bother you - just create issue here, and I will stop crawling)
 
-Currently, deployed to https://vacme.kloud.top with refresh interval 10 min and with my account for group `N`.
+Currently, deployed to https://vacme.kloud.top with refresh interval 5 min and with my account for group `N`.
 
 zh.vacme.ch is for Zurich only, please check other cantons on https://foph-coronavirus.ch/vaccination/when-can-i-be-vaccinated/#cantons 
 
