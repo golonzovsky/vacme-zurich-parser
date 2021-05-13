@@ -1,13 +1,9 @@
 # vacme-zurich-parser
 
-**UPD: zh.vacme.ch was updated. Update broke this version of parser. Currently, dropdown displays only locations which supposed to have appointments. Unfortunately available ones are still often without slots. But this is a step in right direction.  
-I will try to fix parser if possible and update this doc.** 
-
-https://zh.vacme.ch provides a way to register for vaccination in Zurich. Since there is not much free slots - its quite tedious to find available one. You need to click dozens of locations.   
-Probably website was designed in this way to support vaccines with 1 injection as well, but its hard to use for 2 dose usual case. Since 2 types of vaccines are approved in Switzerland, both appointments must be in same clinic.
+https://zh.vacme.ch provides a way to register for vaccination in Zurich. Since there is not much free slots - its quite tedious to find available one. Recently dropdown was updated to filter not available ones, but unfortunately active options often dont have slots either.    
 
 This tries to simplify search by exposing rest api and UI with up to date available slots for vaccination in Zurich.  
-Be aware is uses personal refresh token for existing registration and reverse engineered api, so its all quite fragile.  
+Be aware is uses personal refresh token for existing registration and reverse engineered api, so its all quite fragile - any next update of vacme.ch can break it.  
 
 Main part if you want to reuse code is in `parser` folder. Its python app which periodically calls `zh.vacme.ch`, and exposes basic api for UI and caching layers.  
 Python is not my primary language, so I have no idea what I'm doin.. ¯\_(ツ)_/¯  

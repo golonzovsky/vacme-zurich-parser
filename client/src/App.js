@@ -31,26 +31,6 @@ function App() {
         const interval = setInterval(() => {fetchData()}, 60*1000)
         return () => clearInterval(interval)
     }, []);
-    useEffect(() => {
-        Modal.info({
-            title: 'Main website is updated',
-            width: 800,
-            closable: false,
-            content: (
-                <div>
-                    <p/>
-                    <p/>
-                    <p>It seems, you no longer can select locations without appointments.</p>
-                    <p/>
-                    <p/>
-                    <p>Please check it there <a href='https://zh.vacme.ch'>https://zh.vacme.ch</a></p>
-                    <p/>
-                    <Text type="secondary" >Unfortunately, this update broke our parser, we'll try to fix it if possible.</Text><p/>
-                    <Text type="secondary" >Current data on this page is no longer up to date.</Text><p/>
-                </div>
-            ),
-        });
-    }, []);
 
     function enhanceLocationsMappingWithActive(result) {
         //result = {'data': dummyData}
