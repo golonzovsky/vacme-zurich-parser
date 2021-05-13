@@ -21,16 +21,15 @@ function App() {
     const [data, setData] = useState({locations: []});
     //const dummyData = {"last_refresh":1620682132562,"locations":[{"firstDate":1620820800000,"name":"_Impfzentrum Uster","secondDate":1623240000000},{"firstDate":1620907200000,"name":"_Impfzentrum Winterthur","secondDate":1623758400000},{"firstDate":1621598400000,"name":"_Impfzentrum Wetzikon","secondDate":1624017600000},{"firstDate":1621944000000,"name":"_Referenz-Impfzentrum Z\u00fcrich","secondDate":1624363200000},{"firstDate":1622030400000,"name":"_Impfzentrum Horgen","secondDate":1624449600000},{"firstDate":1622721600000,"name":"_Impfzentrum Affoltern","secondDate":1625486400000},{"firstDate":1622721600000,"name":"_Impfzentrum Messe Z\u00fcrich","secondDate":1625140800000},{"firstDate":1622808000000,"name":"_Impfzentrum Dietikon","secondDate":1625227200000}],"refresh_interval_sec":600,"source":"https://github.com/golonzovsky/vacme-zurich-parser","vaccination_group":"N"}
 
-    //todo schedule next fetch after expected next refresh
     useEffect(() => {
-        async function fetchData() {
-            const result = await axios(
-                '/api/',
-            );
+        const fetchData = async () => {
+            const result = await axios('/api/');
             setData(result.data);
             enhanceLocationsMappingWithActive(result);
         }
         fetchData();
+        const interval = setInterval(() => {fetchData()}, 60*1000)
+        return () => clearInterval(interval)
     }, []);
 
     function enhanceLocationsMappingWithActive(result) {
