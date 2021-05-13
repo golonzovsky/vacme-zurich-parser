@@ -1,6 +1,6 @@
 import './App.css';
 import React, {useCallback, useEffect, useState} from 'react';
-import {Col, Layout, Row, Typography} from 'antd';
+import {Col, Layout, Row, Typography, Modal} from 'antd';
 import axios from 'axios';
 import moment from "moment";
 import Pins from "./Pins";
@@ -31,6 +31,26 @@ function App() {
         const interval = setInterval(() => {fetchData()}, 60*1000)
         return () => clearInterval(interval)
     }, []);
+    useEffect(() => {
+        Modal.info({
+            title: 'Main website is updated',
+            width: 800,
+            closable: false,
+            content: (
+                <div>
+                    <p/>
+                    <p/>
+                    <p>It seems, you no longer can select locations without appointments.</p>
+                    <p/>
+                    <p/>
+                    <p>Please check it there <a href='https://zh.vacme.ch'>https://zh.vacme.ch</a></p>
+                    <p/>
+                    <Text type="secondary" >Unfortunately, this update broke our parser, we'll try to fix it if possible.</Text><p/>
+                    <Text type="secondary" >Current data on this page is no longer up to date.</Text><p/>
+                </div>
+            ),
+        });
+    }, []);
 
     function enhanceLocationsMappingWithActive(result) {
         //result = {'data': dummyData}
@@ -44,8 +64,6 @@ function App() {
         )
         let enhancedLocations = locations_mapping.map(location => {
             if (!(location.name in activeLocationsByName)) {
-                //todo report event of lookup table entry miss to mothership (or move all of this location enhancements to api)
-                console.log("reverse map lookup per entry filed (active key from location mapping)", location.name)
                 return {...location, active: false}
             }
             let activeByName = activeLocationsByName[location.name];
