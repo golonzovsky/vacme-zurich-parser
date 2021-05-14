@@ -36,7 +36,7 @@ cache = {
     'source': 'https://github.com/golonzovsky/vacme-zurich-parser',
 }
 
-all_locations = {
+dropdown_locations = {
     'locations': []
 }
 
@@ -80,7 +80,7 @@ def fetch_all_locations():
 
     resp = resp_full.json()
     logging.info("found %s possible locations", len(resp))
-    all_locations['locations'] = resp
+    dropdown_locations['locations'] = resp
     return resp
 
 
@@ -141,7 +141,7 @@ def update_token_secret(new_token):
 def fetch_location_with_available_first_appointment():
     next_first_date_locations = []
 
-    for location in all_locations['locations']:
+    for location in dropdown_locations['locations']:
         if location.get('noFreieTermine'):
             # skip prefiltered from server
             continue
@@ -201,7 +201,7 @@ def update_caches():
 
 @app.route("/api/locations")
 def api_locations():
-    return jsonify(all_locations)
+    return jsonify(dropdown_locations.get('locations'))
 
 
 @app.route("/api/")

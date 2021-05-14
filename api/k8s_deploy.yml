@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: vacme-api
+  namespace: vacme
 spec:
   replicas: 2
   selector:
@@ -30,9 +31,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: loghttp-debug
+  name: vacme-api
+  namespace: vacme
 spec:
   ports:
     - port: 8000
+      name: api
   selector:
     app: vacme-api

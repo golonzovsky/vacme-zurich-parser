@@ -1,40 +1,36 @@
 package main
 
 import (
-	"fmt"
-	"github.com/sirupsen/logrus"
-	"log"
-	"net/http"
-	"net/http/httputil"
+	"github.com/gin-gonic/gin"
+	"github.com/golonzovsky/vacme/handlers"
+	log "github.com/sirupsen/logrus"
 )
 
 func main() {
 	initLogger()
-	http.HandleFunc("/events/failed_lookup", logRequest)
-	http.HandleFunc("/health", health)
-	log.Fatal(http.ListenAndServe("0.0.0.0:8000", nil))
+
+	r := gin.New()
+	r.Use(loggerIgnoreHealth(), gin.Recovery())
+	r.GET("/health", handlers.Ok)
+
+	//v2 := r.Group("/api/v2")
+	r.POST("/api/v2/log", handlers.Log) //todo rename to twillio callback and check hmac(sha1)
+	r.GET("/api/v2/locations", handlers.Locations)
+
+	r.Run("0.0.0.0:8000")
 }
 
-func health(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-}
-
-func logRequest(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-
-	requestDump, err := httputil.DumpRequest(r, true)
-	if err != nil {
-		fmt.Println(err)
-	}
-	log.Println(string(requestDump))
+func loggerIgnoreHealth() gin.HandlerFunc {
+	return gin.LoggerWithConfig(gin.LoggerConfig{
+		SkipPaths: []string{"/health"},
+	})
 }
 
 func initLogger() {
-	logger := logrus.New()
-	logger.SetFormatter(&logrus.TextFormatter{
+	log.SetFormatter(&log.TextFormatter{
 		FullTimestamp: true,
 		ForceColors:   true,
 	})
-	logger.SetLevel(logrus.WarnLevel)
-	log.SetOutput(logger.Writer())
+	log.SetLevel(log.DebugLevel)
+	gin.ForceConsoleColor()
 }

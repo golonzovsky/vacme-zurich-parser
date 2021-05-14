@@ -2,6 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: vacme-parser
+  namespace: vacme
   annotations:
     kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
@@ -11,6 +12,13 @@ spec:
     - host: vacme.kloud.top
       http:
         paths:
+          - backend:
+              service:
+                name: vacme-api
+                port:
+                  number: 8000
+            path: /api/v2/
+            pathType: Prefix
           - backend:
               service:
                 name: vacme-parser
@@ -34,6 +42,7 @@ apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
   name: letsencrypt-prod
+  namespace: vacme
 spec:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
