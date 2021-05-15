@@ -6,25 +6,70 @@ import (
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
+	"sync"
+	"time"
 )
 
 var geoMapping map[string]geoLocation
-var locations []location
+var respCache = RespCache{data: &fullLocationResp{}}
+
+type RespCache struct {
+	mu   sync.Mutex
+	data *fullLocationResp
+}
+
+func (resp *fullLocationResp) isValid() bool {
+	nextRefresh := time.Unix(resp.LastRefresh/1000, resp.LastRefresh%1000).Add(time.Second * time.Duration(resp.RefreshIntervalSec))
+	log.Debugf("next refresh %s, now is %s", nextRefresh, time.Now())
+	return time.Now().Before(nextRefresh)
+}
 
 func Locations(c *gin.Context) {
-	dropDownLocations, err := fetchDropDownLocations()
-	if err != nil {
-		c.JSON(500, nil)
-		return
+
+	respCache.mu.Lock()
+	defer respCache.mu.Unlock()
+
+	if !respCache.data.isValid() {
+		resp, err := fetchLocationData()
+		if err != nil {
+			c.JSON(500, nil)
+			return
+		}
+		respCache.data = resp
 	}
 
-	activeResp, err := fetchActiveLocations()
-	var activeMapping = make(map[string]activeLocation)
-	if err != nil {
-		c.JSON(500, nil)
-		return
+	c.JSON(200, respCache.data)
+}
+
+func fetchLocationData() (*fullLocationResp, error) {
+	var wg = &sync.WaitGroup{} // todo this parallel run is fun, but kinda useless
+	wg.Add(2)
+
+	var dropDownLocationsErr, activeLocationErr error
+
+	var dropDownLocations []location
+	go func() {
+		defer wg.Done()
+		dropDownLocations, dropDownLocationsErr = fetchDropDownLocations()
+	}()
+
+	var activeLocationResp *activeLocationResponse
+	go func() {
+		defer wg.Done()
+		activeLocationResp, activeLocationErr = fetchActiveLocations()
+	}()
+
+	wg.Wait()
+
+	if dropDownLocationsErr != nil {
+		return nil, dropDownLocationsErr
 	}
-	for _, location := range activeResp.Locations {
+	if activeLocationErr != nil {
+		return nil, activeLocationErr
+	}
+
+	var activeMapping = make(map[string]activeLocation)
+	for _, location := range activeLocationResp.Locations {
 		activeMapping[location.Name] = location
 	}
 
@@ -43,15 +88,15 @@ func Locations(c *gin.Context) {
 			geoLocation:    &geoData,
 			activeLocation: &active,
 		})
-
 	}
 
-	c.JSON(200, fullLocationResp{
-		VaccinationGroup:   activeResp.VaccinationGroup,
-		LastRefresh:        activeResp.LastRefresh,
-		RefreshIntervalSec: activeResp.RefreshIntervalSec,
+	resp := fullLocationResp{
+		VaccinationGroup:   activeLocationResp.VaccinationGroup,
+		LastRefresh:        activeLocationResp.LastRefresh,
+		RefreshIntervalSec: activeLocationResp.RefreshIntervalSec,
 		Locations:          enhancedLocations,
-	})
+	}
+	return &resp, nil
 }
 
 func fetchDropDownLocations() ([]location, error) {
@@ -131,7 +176,7 @@ type activeLocationResponse struct {
 
 func init() {
 	var geoLocations []geoLocation
-	plan, _ := ioutil.ReadFile("locationMapping.json") //todo map from configmap
+	plan, _ := ioutil.ReadFile("/home/ax/project/next/vacme/api/locationMapping.json") //todo map from configmap
 	err := json.Unmarshal(plan, &geoLocations)
 	if err != nil {
 		log.Fatal("Location mapping seed read failure", err)
