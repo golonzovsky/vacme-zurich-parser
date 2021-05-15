@@ -41,7 +41,7 @@ func (resp *fullLocationResp) initialized() bool {
 
 func Locations(c *gin.Context) {
 
-	respCache.mu.Lock()
+	respCache.mu.Lock() //todo this is naive locking. improve
 	defer respCache.mu.Unlock()
 
 	if !respCache.data.isValid() {
@@ -106,7 +106,7 @@ func fetchLocationData() (*fullLocationResp, error) {
 }
 
 func fetchDropDownLocations() ([]location, error) {
-	httpResp, err := http.Get("http://vacme-parser:5000/api/locations") //todo make configurable viper
+	httpResp, err := http.Get("http://vacme-parser:5000/api/locations") //todo extract to config viper
 	//resp, err := http.Get("https://vacme.kloud.top/api/locations")
 	if err != nil {
 		return nil, err
@@ -126,7 +126,7 @@ func fetchDropDownLocations() ([]location, error) {
 }
 
 func fetchActiveLocations() (*activeLocationResponse, error) {
-	httpResp, err := http.Get("http://vacme-parser:5000/api/") //todo make configurable viper
+	httpResp, err := http.Get("http://vacme-parser:5000/api/") //todo extract to config viper
 	//httpResp, err := http.Get("https://vacme.kloud.top/api/")
 	if err != nil {
 		return nil, err
