@@ -24,8 +24,8 @@ UPD: I've found similar service https://rimpfli.web.app - check it out as well. 
 ## possible todo
 - [ ] notifications in UI (?)
 - [ ] contact locations to get an info of which vaccine is in use there (?)
-- [ ] store/show statistics on slots per day etc
-- [ ] automatic SMS login (my twillio order is pending)
+- [ ] store/show statistics about slots per day etc
+- [ ] automatic SMS login 
 
 ## API
 
