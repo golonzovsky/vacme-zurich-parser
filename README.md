@@ -49,8 +49,7 @@ Example response:
 
 List all locations (will cleanup fields) https://vacme.kloud.top/api/locations: 
 ```json
-{
-  "locations": [
+[
     {
       "glnNummer": "7601001326460",
       "id": "00d65270-264f-469f-bdac-765d01d2b14c",
@@ -78,7 +77,7 @@ List all locations (will cleanup fields) https://vacme.kloud.top/api/locations:
       "version": 1
     }
 ...
-]}
+]
 ```
 
 ## local deployment
