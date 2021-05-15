@@ -104,7 +104,7 @@ function App() {
                         <Text type="secondary" style={{paddingTop: '15px', display: 'block'}}>Last scan: {moment(data.last_refresh).fromNow()}</Text>
                     </Col>
                     <Col lg={{span: 18, offset: 0}} style={{minHeight: "100vh"}}>
-                        <MapGL {...viewport} width="100%" height="100%" onViewportChange={(viewport) => setViewport(viewport)}>
+                        <MapGL {...viewport} dragRotate={false} width="100%" height="100%" onViewportChange={(viewport) => setViewport(viewport)}>
                             <Pins data={enhancedLocations} onClick={setPopupInfo}/>
 
                             {popupInfo && (
