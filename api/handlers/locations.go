@@ -167,10 +167,10 @@ type location struct {
 }
 
 type fullLocationResp struct {
-	VaccinationGroup   string `json:"vaccination_group"`
-	LastRefresh        int64  `json:"last_refresh"`
-	RefreshIntervalSec int    `json:"refresh_interval_sec"`
-	Locations          []location
+	VaccinationGroup   string     `json:"vaccination_group"`
+	LastRefresh        int64      `json:"last_refresh"`
+	RefreshIntervalSec int        `json:"refresh_interval_sec"`
+	Locations          []location `json:"locations"`
 }
 
 type activeLocationResponse struct {
