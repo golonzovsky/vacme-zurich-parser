@@ -2,18 +2,19 @@ import moment from "moment";
 import {Empty, List} from "antd";
 import {ScheduleOutlined} from "@ant-design/icons";
 
-function LocationList(props) {
-    const {locations, onSelectLocation} = props;
+function LocationList({locations, onSelectLocation}) {
 
     const formatDate = (date) => {
         return moment(date).format("DD MMMM YYYY")
     };
 
+    const activeLocations = locations ? locations.filter( l => Boolean(l.secondDate)) : []
+
     return <div>
-        {locations && locations.length ?
+        {activeLocations.length ?
             <List
                 itemLayout="horizontal"
-                dataSource={locations}
+                dataSource={activeLocations}
                 renderItem={item => (
                     <List.Item onClick={() => onSelectLocation(item)} style={{cursor: 'pointer'}}>
                         <List.Item.Meta

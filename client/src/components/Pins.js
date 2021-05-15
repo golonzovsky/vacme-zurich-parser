@@ -8,8 +8,7 @@ const ICON = `M20.2,15.7L20.2,15.7c1.1-1.6,1.8-3.6,1.8-5.7c0-5.6-4.5-10-10-10S2,
 
 const SIZE = 30;
 
-function Pins(props) {
-    const {data, onClick} = props;
+function Pins({data, onClick}) {
 
     return data.map((location, index) => (
         <Marker key={`marker-${index}`} longitude={location.longitude} latitude={location.latitude}>
@@ -18,7 +17,7 @@ function Pins(props) {
                 viewBox="0 0 24 24"
                 style={{
                     cursor: 'pointer',
-                    fill: location.active ? '#d00' : '#777',
+                    fill: location.secondDate ? '#d00' : '#777',
                     stroke: 'none',
                     transform: `translate(${-SIZE / 2}px,${-SIZE}px)`
                 }}

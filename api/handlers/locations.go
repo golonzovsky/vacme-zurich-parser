@@ -107,7 +107,7 @@ func fetchLocationData() (*fullLocationResp, error) {
 
 func fetchDropDownLocations() ([]location, error) {
 	httpResp, err := http.Get("http://vacme-parser:5000/api/locations") //todo extract to config viper
-	//resp, err := http.Get("https://vacme.kloud.top/api/locations")
+	//httpResp, err := http.Get("https://vacme.kloud.top/api/locations")
 	if err != nil {
 		return nil, err
 	}
@@ -147,8 +147,8 @@ func fetchActiveLocations() (*activeLocationResponse, error) {
 
 type activeLocation struct {
 	Name       string `json:"name"`
-	FirstDate  int64  `json:"first_date,omitempty"`
-	SecondDate int64  `json:"second_date,omitempty"`
+	FirstDate  int64  `json:"firstDate,omitempty"`
+	SecondDate int64  `json:"secondDate,omitempty"`
 }
 
 type geoLocation struct {
@@ -174,15 +174,16 @@ type fullLocationResp struct {
 }
 
 type activeLocationResponse struct {
-	VaccinationGroup   string `json:"vaccination_group"`
-	LastRefresh        int64  `json:"last_refresh"`
-	RefreshIntervalSec int    `json:"refresh_interval_sec"`
-	Locations          []activeLocation
+	VaccinationGroup   string           `json:"vaccination_group"`
+	LastRefresh        int64            `json:"last_refresh"`
+	RefreshIntervalSec int              `json:"refresh_interval_sec"`
+	Locations          []activeLocation `json:"locations"`
 }
 
 func init() {
 	var geoLocations []geoLocation
 	plan, _ := ioutil.ReadFile("locationMapping.json") //todo map from configmap
+	//plan, _ := ioutil.ReadFile("/home/ax/project/next/vacme/api/locationMapping.json") //todo map from configmap
 	err := json.Unmarshal(plan, &geoLocations)
 	if err != nil {
 		log.Fatal("Location mapping seed read failure", err)
