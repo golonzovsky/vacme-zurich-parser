@@ -19,9 +19,24 @@ type RespCache struct {
 }
 
 func (resp *fullLocationResp) isValid() bool {
+	if resp.LastRefresh == 0 {
+		log.Debugf("initial cache warmup")
+		return false
+	}
+
 	nextRefresh := time.Unix(resp.LastRefresh/1000, resp.LastRefresh%1000).Add(time.Second * time.Duration(resp.RefreshIntervalSec))
-	log.Debugf("next refresh %s, now is %s", nextRefresh, time.Now())
-	return time.Now().Before(nextRefresh)
+	refreshIsInFuture := time.Now().Before(nextRefresh)
+
+	if refreshIsInFuture {
+		log.Debugf("time till next refresh %s", nextRefresh.Sub(time.Now()))
+	} else {
+		log.Debugf("data is stale for %s, refreshing", time.Now().Sub(nextRefresh))
+	}
+	return refreshIsInFuture
+}
+
+func (resp *fullLocationResp) initialized() bool {
+	return resp.LastRefresh != 0
 }
 
 func Locations(c *gin.Context) {
@@ -32,7 +47,13 @@ func Locations(c *gin.Context) {
 	if !respCache.data.isValid() {
 		resp, err := fetchLocationData()
 		if err != nil {
-			c.JSON(500, nil)
+			if !respCache.data.initialized() {
+				log.Warnf("downstream call failed %s, and we dont have stale data to return", err)
+				c.JSON(500, nil)
+			} else {
+				log.Warnf("downstream call failed %s, but we have stale data to return", err)
+				c.JSON(200, respCache.data)
+			}
 			return
 		}
 		respCache.data = resp
@@ -42,28 +63,13 @@ func Locations(c *gin.Context) {
 }
 
 func fetchLocationData() (*fullLocationResp, error) {
-	var wg = &sync.WaitGroup{} // todo this parallel run is fun, but kinda useless
-	wg.Add(2)
 
-	var dropDownLocationsErr, activeLocationErr error
-
-	var dropDownLocations []location
-	go func() {
-		defer wg.Done()
-		dropDownLocations, dropDownLocationsErr = fetchDropDownLocations()
-	}()
-
-	var activeLocationResp *activeLocationResponse
-	go func() {
-		defer wg.Done()
-		activeLocationResp, activeLocationErr = fetchActiveLocations()
-	}()
-
-	wg.Wait()
-
+	var dropDownLocations, dropDownLocationsErr = fetchDropDownLocations()
 	if dropDownLocationsErr != nil {
 		return nil, dropDownLocationsErr
 	}
+
+	var activeLocationResp, activeLocationErr = fetchActiveLocations()
 	if activeLocationErr != nil {
 		return nil, activeLocationErr
 	}
@@ -100,13 +106,13 @@ func fetchLocationData() (*fullLocationResp, error) {
 }
 
 func fetchDropDownLocations() ([]location, error) {
-	//resp, err := http.Get("http://vacme-parser:5000/api/locations") todo switch to internal and hide python
-	resp, err := http.Get("https://vacme.kloud.top/api/locations")
+	httpResp, err := http.Get("http://vacme-parser:5000/api/locations") //todo make configurable viper
+	//resp, err := http.Get("https://vacme.kloud.top/api/locations")
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	defer httpResp.Body.Close()
+	body, err := ioutil.ReadAll(httpResp.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -120,8 +126,8 @@ func fetchDropDownLocations() ([]location, error) {
 }
 
 func fetchActiveLocations() (*activeLocationResponse, error) {
-	//resp, err := http.Get("http://vacme-parser:5000/api/") todo switch to internal and hide python
-	httpResp, err := http.Get("https://vacme.kloud.top/api/")
+	httpResp, err := http.Get("http://vacme-parser:5000/api/") //todo make configurable viper
+	//httpResp, err := http.Get("https://vacme.kloud.top/api/")
 	if err != nil {
 		return nil, err
 	}
@@ -176,7 +182,7 @@ type activeLocationResponse struct {
 
 func init() {
 	var geoLocations []geoLocation
-	plan, _ := ioutil.ReadFile("/home/ax/project/next/vacme/api/locationMapping.json") //todo map from configmap
+	plan, _ := ioutil.ReadFile("locationMapping.json") //todo map from configmap
 	err := json.Unmarshal(plan, &geoLocations)
 	if err != nil {
 		log.Fatal("Location mapping seed read failure", err)
