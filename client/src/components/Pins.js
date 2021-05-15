@@ -10,7 +10,7 @@ const SIZE = 30;
 
 function Pins({data, onClick}) {
 
-    return data.map((location, index) => (
+    return data.filter(l => l.latitude).map((location, index) => (
         <Marker key={`marker-${index}`} longitude={location.longitude} latitude={location.latitude}>
             <svg
                 height={SIZE}

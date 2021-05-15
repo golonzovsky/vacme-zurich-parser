@@ -95,6 +95,7 @@
     {"name": "Opfikon, Coop Vitality Apotheke Opfikon", "latitude": 47.424027090363246, "longitude":  8.562429664949091, "link": "https://goo.gl/maps/1wK5DdLJkyb7cUsD8"},
     {"name": "Winterthur, Bahnhof Apotheke", "latitude": 47.49960507384176, "longitude":  8.723552218927244, "link": "https://goo.gl/maps/DMeWfLLgd6zwSYUX6"},
     {"name": "Meilen, TopPharm Apotheke & Parfumerie Dr. Rebhan AG", "latitude": 47.26842446262128, "longitude":  8.645429456357533, "link": "https://goo.gl/maps/B4XV1tGoUe79s5UY7"},
-    {"name": "Zürich-Flughafen, Amavita Apotheke Zürich Flughafen", "latitude": 47.45123126981944, "longitude":  8.562903011623115, "link": "https://g.page/amavita-flughafen"}
+    {"name": "Zürich-Flughafen, Amavita Apotheke Zürich Flughafen", "latitude": 47.45123126981944, "longitude":  8.562903011623115, "link": "https://g.page/amavita-flughafen"},
+    {"name": "Zürich, Apotheke Utogrund", "latitude": 47.37922811601539, "longitude":  8.494885574746206, "link": "https://goo.gl/maps/cHfZDWKEmq2StD3fA"}
 
 ]
