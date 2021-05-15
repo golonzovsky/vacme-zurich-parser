@@ -1,7 +1,8 @@
 # ui
 
-This is `react` app to display available slots in human-readable form and on a map. 
-First messy draft, need to split into components and cleanup. Probably move location mapping to api. 
+This is `react` app to display available slots in human-readable form and on a map.
+
+UPD: client code switched to use caching proxy and all geo mapping logic moved there as well. If you want to run UI directly on top of python api - check history before https://github.com/golonzovsky/vacme-zurich-parser/commit/433a6bf652e5b406826493598e6e879a092e9de6 (it was messy thou)
 
 ![ui screenshot](../ui_example.png)
 

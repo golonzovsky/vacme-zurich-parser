@@ -29,56 +29,38 @@ UPD: I've found similar service https://rimpfli.web.app - check it out as well. 
 
 ## API
 
-Currently json api for available slots for both appointments available under https://vacme.kloud.top/api
+Here is main caching flat api providing appointment data and geo `https://vacme.kloud.top/api/v2/locations` for UI display.  
 Example response: 
 ```json
 {
-  "last_refresh": 1620671956765,
+  "vaccination_group": "N",
+  "last_refresh": 1621085095601,
+  "refresh_interval_sec": 250,
   "locations": [
     {
-      "firstDate": 1620993600000,
-      "name": "_Impfzentrum Winterthur",
-      "secondDate": 1623844800000
-    }
-  ],
-  "refresh_interval_sec": 600,
-  "source": "https://github.com/golonzovsky/vacme-zurich-parser",
-  "vaccination_group": "N"
+      "name": "Zürich, TopPharm Morgental Apotheke",
+      "id": "00d65270-264f-469f-bdac-765d01d2b14c",
+      "noFreieTermine": true,
+      "latitude": 47.3437185858769,
+      "longitude": 8.529828454511142,
+      "link": "https://goo.gl/maps/8VFBvGnSGrZJLHW98"
+    },
+    {
+      "name": "Affoltern, Amavita Apotheke Affoltern a. A.",
+      "id": "02a43092-5990-44f7-9d28-2b7414668347",
+      "noFreieTermine": true,
+      "latitude": 47.27729486909392,
+      "longitude": 8.44968738334539,
+      "link": "https://g.page/amavita-affoltern-am-albis"
+    },
+    .....
+  ]
 }
 ```
 
-List all locations (will cleanup fields) https://vacme.kloud.top/api/locations: 
-```json
-[
-    {
-      "glnNummer": "7601001326460",
-      "id": "00d65270-264f-469f-bdac-765d01d2b14c",
-      "mobilerOrtDerImpfung": false,
-      "name": "Zürich, TopPharm Morgental Apotheke",
-      "noFreieTermine": true,
-      "terminverwaltung": true,
-      "timestampErstellt": "2021-04-30T14:35:15",
-      "timestampMutiert": "2021-05-12T22:10:00",
-      "userErstellt": "f7c43312-7245-429e-96b9-a615b989522a",
-      "userMutiert": "f7c43312-7245-429e-96b9-a615b989522a",
-      "version": 1
-    },
-    {
-      "glnNummer": "7601001368712",
-      "id": "02a43092-5990-44f7-9d28-2b7414668347",
-      "mobilerOrtDerImpfung": false,
-      "name": "Affoltern, Amavita Apotheke Affoltern a. A.",
-      "noFreieTermine": true,
-      "terminverwaltung": true,
-      "timestampErstellt": "2021-04-30T09:23:32",
-      "timestampMutiert": "2021-05-12T22:10:00",
-      "userErstellt": "f7c43312-7245-429e-96b9-a615b989522a",
-      "userMutiert": "f7c43312-7245-429e-96b9-a615b989522a",
-      "version": 1
-    }
-...
-]
-```
+`noFreieTermine` and `id` fields are propagated from `vacme.ch` directly. 
+
+See parser only api in `parser` folder. 
 
 ## local deployment
 if you want to run it locally, find your REGISTRATION_ID and REFRESH_TOKEN from browser network tab and run:
