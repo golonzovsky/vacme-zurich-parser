@@ -18,7 +18,7 @@ function Map({locations, selectedLocation}) {
     });
 
     useEffect(() => {
-        if (!selectedLocation)
+        if (!selectedLocation || !selectedLocation.latitude)
             return
 
         setViewport({

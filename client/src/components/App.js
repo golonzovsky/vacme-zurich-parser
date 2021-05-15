@@ -6,6 +6,7 @@ import moment from "moment";
 import LocationList from "./LocationList";
 import GithubRibbon from "./GithubRibbon";
 import Map from "./Map";
+//import dummyResp from "./dummyData.json"
 
 const {Header, Content} = Layout;
 const {Title, Text} = Typography;
@@ -26,6 +27,12 @@ function App() {
         return () => clearInterval(interval)
     }, []);
 
+/*
+    useEffect(() => {
+        setData(dummyResp)
+    }, []);
+*/
+
     return (
         <Layout style={{minHeight: "100vh"}}>
             <Header style={{position: 'fixed', zIndex: 1, width: '100%'}}>
@@ -37,8 +44,7 @@ function App() {
                     <Col lg={{span: 6, offset: 0}} style={{minHeight: "100vh", padding: '30px'}}>
                         <Title level={3} style={{paddingTop: '50px'}}>Available slots for group N:</Title>
                         <LocationList locations={data.locations} onSelectLocation={setSelectedLocation}/>
-                        <Text type="secondary" style={{paddingTop: '15px', display: 'block'}}>Last
-                            scan: {moment(data.last_refresh).fromNow()}</Text>
+                        <Text type="secondary" style={{paddingTop: '15px', display: 'block'}}>Last scan: {moment(data.last_refresh).fromNow()} (auto-refresh)</Text>
                     </Col>
                     <Col lg={{span: 18, offset: 0}} style={{minHeight: "100vh"}}>
                         <Map locations={data.locations} selectedLocation={selectedLocation}/>
