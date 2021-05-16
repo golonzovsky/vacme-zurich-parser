@@ -8,7 +8,7 @@ function LocationList({locations, onSelectLocation}) {
         return moment(date).format("DD MMMM YYYY")
     };
 
-    const activeLocations = locations ? locations.filter( l => Boolean(l.secondDate)) : []
+    const activeLocations = locations ? locations.filter( l => Boolean(l.secondDate)).sort( (l1, l2) => l1.firstDate - l2.firstDate) : []
 
     return <div>
         {activeLocations.length ?
