@@ -103,13 +103,14 @@ def do_refresh_token():
     resp = requests.post('https://zh.vacme.ch/auth/realms/vacme/protocol/openid-connect/token', data=req)
 
     if resp.status_code != 200:
-        logging.error("token refresh failed. status:%s content-type:%s. cannot recover, exiting",
-                      resp.status_code, resp.headers.get('content-type'))
-        sys.exit("Cannot recover token. Probably SMS login required. Exiting.")
+        logging.error("token refresh failed. status:%s content-type:%s. %s",
+                      resp.status_code, resp.headers.get('content-type'), resp.text)
+        sys.exit("Cannot recover token. Either seed token is stale or SMS login required. Exiting.")
 
     if resp.headers.get('content-type') == 'text/html':
         logging.error('token refresh require captcha to be solved.'
-                      'Open https://zh.vacme.ch in your browser. (token response content-type:text/html)')
+                      'Open https://zh.vacme.ch in your browser. (token response content-type:text/html): %s',
+                      resp.text)
         sys.exit("Cannot recover token. Probably captcha required. Exiting.")
 
     resp_json = resp.json()
