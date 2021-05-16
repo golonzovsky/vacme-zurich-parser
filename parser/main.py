@@ -6,6 +6,7 @@ import os
 import atexit
 import requests
 import sys
+import time
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask
 from flask import jsonify
@@ -20,7 +21,7 @@ app_config = {
 }
 
 headers = {
-    'User-Agent': 'Friendly parser. https://github.com/golonzovsky/vacme-zurich-parser',
+    'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:88.0) Gecko/20100101 Firefox/88.0cd',
     'Accept': 'application/json',
     'Referer': 'https://zh.vacme.ch/',
     'Content-Type': 'application/json',
@@ -105,7 +106,9 @@ def do_refresh_token():
     if resp.status_code != 200:
         logging.error("token refresh failed. status:%s content-type:%s. %s",
                       resp.status_code, resp.headers.get('content-type'), resp.text)
-        sys.exit("Cannot recover token. Either seed token is stale or SMS login required. Exiting.")
+        sys.exit("Cannot recover token. "
+                 "Either seed token is stale, or IP is blocked, or SMS login is required. "
+                 "Exiting.")
 
     if resp.headers.get('content-type') == 'text/html':
         logging.error('token refresh require captcha to be solved.'
@@ -156,6 +159,7 @@ def fetch_location_with_available_first_appointment():
                 'nextDate': resp['nextDate'],
                 'nextDateMillis': parse_date_to_milli(resp['nextDate'])
             })
+        time.sleep(1)  # dunno, dude.. maybe this will keep this obnoxious WAF chill.. I'm out of ideas
 
     next_first_date_locations.sort(key=lambda x: x['nextDateMillis'])
     logging.info("found %s first appointments", len(next_first_date_locations))
@@ -173,6 +177,8 @@ def fetch_locations_with_both_appointments(locations):
                          }
             logging.info("found location with both available: %s %s", next['name'], available)
             next_second_locations.append(available)
+        time.sleep(1)   # dunno, dude.. maybe this will keep this obnoxious WAF chill.. I'm out of ideas
+
     logging.info("found %s locations with both appointments", len(next_second_locations))
     return next_second_locations
 
