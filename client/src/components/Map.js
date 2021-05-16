@@ -45,8 +45,8 @@ function Map({locations, selectedLocation}) {
 
         {popupInfo && <MapPopup popupInfo={popupInfo} onClose={setPopupInfo}/>}
 
-        <GeolocateControl style={{top: 60, left: 0, padding: '10px'}} />
-        <FullscreenControl style={{top: 96, left: 0, padding: '10px'}} />
+        <GeolocateControl style={{top: 62, right: 0, padding: '10px', }} />
+        <FullscreenControl style={{top: 98, right: 0, padding: '10px'}} />
     </MapGL>
 }
 
