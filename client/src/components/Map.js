@@ -1,6 +1,12 @@
 import './App.css';
 import React, {useEffect, useState} from 'react';
-import MapGL, {FlyToInterpolator} from 'react-map-gl';
+import MapGL, {
+    FlyToInterpolator,
+    FullscreenControl,
+    GeolocateControl,
+    NavigationControl,
+    ScaleControl
+} from 'react-map-gl';
 import Pins from "./Pins";
 import MapPopup from "./MapPopup";
 
@@ -39,6 +45,8 @@ function Map({locations, selectedLocation}) {
 
         {popupInfo && <MapPopup popupInfo={popupInfo} onClose={setPopupInfo}/>}
 
+        <GeolocateControl style={{top: 60, left: 0, padding: '10px'}} />
+        <FullscreenControl style={{top: 96, left: 0, padding: '10px'}} />
     </MapGL>
 }
 
