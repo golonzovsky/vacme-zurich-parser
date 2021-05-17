@@ -21,13 +21,6 @@ spec:
             pathType: Prefix
           - backend:
               service:
-                name: vacme-parser
-                port:
-                  name: api
-            path: /api/
-            pathType: Prefix
-          - backend:
-              service:
                 name: vacme-ui
                 port:
                   number: 80
