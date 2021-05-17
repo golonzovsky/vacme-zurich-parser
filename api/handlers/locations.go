@@ -79,7 +79,7 @@ func fetchLocationData() (*fullLocationResp, error) {
 		activeMapping[location.Name] = location
 	}
 
-	var enhancedLocations []location
+	var enhancedLocations = make([]location, 0)
 	for _, loc := range dropDownLocations {
 		geoData, ok := geoMapping[loc.Name]
 		if !ok {
@@ -108,6 +108,7 @@ func fetchLocationData() (*fullLocationResp, error) {
 func fetchDropDownLocations() ([]location, error) {
 	httpResp, err := http.Get("http://vacme-parser:5000/api/locations") //todo extract to config viper
 	//httpResp, err := http.Get("https://vacme.kloud.top/api/locations")
+	//httpResp, err := http.Get("http://localhost:5000/api/locations")
 	if err != nil {
 		return nil, err
 	}
@@ -128,6 +129,7 @@ func fetchDropDownLocations() ([]location, error) {
 func fetchActiveLocations() (*activeLocationResponse, error) {
 	httpResp, err := http.Get("http://vacme-parser:5000/api/") //todo extract to config viper
 	//httpResp, err := http.Get("https://vacme.kloud.top/api/")
+	//httpResp, err := http.Get("http://localhost:5000/api/")
 	if err != nil {
 		return nil, err
 	}
@@ -182,8 +184,7 @@ type activeLocationResponse struct {
 
 func init() {
 	var geoLocations []geoLocation
-	plan, _ := ioutil.ReadFile("locationMapping.json") //todo map from configmap
-	//plan, _ := ioutil.ReadFile("/home/ax/project/next/vacme/api/locationMapping.json") //todo map from configmap
+	plan, _ := ioutil.ReadFile("locationMapping.json") //todo map from configmap or/and configurable viper
 	err := json.Unmarshal(plan, &geoLocations)
 	if err != nil {
 		log.Fatal("Location mapping seed read failure", err)

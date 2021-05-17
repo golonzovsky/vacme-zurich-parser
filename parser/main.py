@@ -17,7 +17,7 @@ app = Flask(__name__)
 app_config = {
     'refresh_token': os.getenv("REFRESH_TOKEN"),
     'registration_id': os.getenv("REGISTRATION_ID"),
-    'refresh_interval_sec': int(os.getenv("REFRESH_INTERVAL_SEC", 60)),
+    'refresh_interval_sec': int(os.getenv("REFRESH_INTERVAL_SEC", 300)),
 }
 
 headers = {
@@ -229,7 +229,7 @@ if __name__ == "__main__":
         logging.info("Running out of cluster, secret updates disabled")
 
     logging.info("Starting vacme parser")
-    update_caches()
+    #update_caches()
 
     scheduler = BackgroundScheduler()
     scheduler.add_job(func=update_caches, trigger="interval", seconds=app_config['refresh_interval_sec'])
