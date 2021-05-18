@@ -1,4 +1,4 @@
-package handlers
+package locations
 
 import (
 	"encoding/json"
@@ -14,11 +14,7 @@ import (
 const apiBase = "http://vacme-parser:5000" //todo extract to config viper
 //const apiBase = "http://localhost:5000"
 
-const mappingLocation = "locationMapping.json" //todo map from configmap or/and configurable viper
-//const mappingLocation = "/home/ax/project/next/vacme/api/locationMapping.json"
-
-var geoMapping map[string]geoLocation
-var respCache = RespCache{data: &fullLocationResp{}}
+var respCache = RespCache{data: &fullLocationResp{LocationResponseMetadata: &LocationResponseMetadata{}}}
 
 type RespCache struct {
 	mu   sync.Mutex
@@ -82,15 +78,40 @@ func getLocations() (*fullLocationResp, error) {
 }
 
 func fetchLocationData() (*fullLocationResp, error) {
-
 	var dropDownLocations, dropDownLocationsErr = fetchDropDownLocations()
 	if dropDownLocationsErr != nil {
 		return nil, dropDownLocationsErr
 	}
 
-	var activeLocationResp, activeLocationErr = fetchActiveLocations()
+	metadata, activeLocationByName, activeLocationErr := fetchActiveLocationsMapping()
 	if activeLocationErr != nil {
 		return nil, activeLocationErr
+	}
+
+	var enhancedLocations = make([]location, 0)
+	for _, loc := range dropDownLocations {
+		geoInfo, _ := geoByName(loc.Name)
+		activeLoc, _ := activeLocationByName[loc.Name]
+		enhancedLocations = append(enhancedLocations, location{
+			Id:             loc.Id,
+			Name:           loc.Name,
+			NoFreeSlot:     loc.NoFreeSlot,
+			geoLocation:    geoInfo,
+			activeLocation: &activeLoc,
+		})
+	}
+
+	resp := fullLocationResp{
+		LocationResponseMetadata: metadata,
+		Locations:                enhancedLocations,
+	}
+	return &resp, nil
+}
+
+func fetchActiveLocationsMapping() (*LocationResponseMetadata, map[string]activeLocation, error) {
+	var activeLocationResp, activeLocationErr = fetchActiveLocations()
+	if activeLocationErr != nil {
+		return nil, nil, activeLocationErr
 	}
 
 	var activeMapping = make(map[string]activeLocation)
@@ -98,33 +119,7 @@ func fetchLocationData() (*fullLocationResp, error) {
 		activeMapping[location.Name] = location
 	}
 
-	var enhancedLocations = make([]location, 0)
-	for _, loc := range dropDownLocations {
-		geoData, ok := geoMapping[loc.Name]
-		if !ok {
-			log.Warnf("missing location in GEO mapping '%s'", loc.Name)
-			//todo use place API to fetch geo and url here
-			//curl -G --data-urlencode 'input=Zürich, Pfauen Apotheke' --data-urlencode 'inputtype=textquery' --data-urlencode 'fields=name,place_id,geometry/location' --data-urlencode 'key=???' https://maps.googleapis.com/maps/api/place/findplacefromtext/json | jq
-			//curl -G --data-urlencode 'place_id=ChIJcz-8JqygmkcRZwT5YWrkaok' --data-urlencode 'fields=url' --data-urlencode 'key=???' https://maps.googleapis.com/maps/api/place/details/json | jq
-			//but better just use https://github.com/googlemaps/google-maps-services-go
-		}
-		active, _ := activeMapping[loc.Name]
-		enhancedLocations = append(enhancedLocations, location{
-			Id:             loc.Id,
-			Name:           loc.Name,
-			NoFreeSlot:     loc.NoFreeSlot,
-			geoLocation:    &geoData,
-			activeLocation: &active,
-		})
-	}
-
-	resp := fullLocationResp{
-		VaccinationGroup:   activeLocationResp.VaccinationGroup,
-		LastRefresh:        activeLocationResp.LastRefresh,
-		RefreshIntervalSec: activeLocationResp.RefreshIntervalSec,
-		Locations:          enhancedLocations,
-	}
-	return &resp, nil
+	return activeLocationResp.LocationResponseMetadata, activeMapping, nil
 }
 
 func fetchDropDownLocations() ([]location, error) {
@@ -171,13 +166,6 @@ type activeLocation struct {
 	SecondDate int64  `json:"secondDate,omitempty"`
 }
 
-type geoLocation struct {
-	Name      string  `json:"name"`
-	Latitude  float64 `json:"latitude,omitempty"`
-	Longitude float64 `json:"longitude,omitempty"`
-	Link      string  `json:"link,omitempty"`
-}
-
 type location struct {
 	Name       string `json:"name"`
 	Id         string `json:"id"`
@@ -186,32 +174,18 @@ type location struct {
 	*geoLocation
 }
 
+type LocationResponseMetadata struct {
+	VaccinationGroup   string `json:"vaccination_group"`
+	LastRefresh        int64  `json:"last_refresh"`
+	RefreshIntervalSec int    `json:"refresh_interval_sec"`
+}
+
 type fullLocationResp struct {
-	VaccinationGroup   string     `json:"vaccination_group"`
-	LastRefresh        int64      `json:"last_refresh"`
-	RefreshIntervalSec int        `json:"refresh_interval_sec"`
-	Locations          []location `json:"locations"`
+	*LocationResponseMetadata
+	Locations []location `json:"locations"`
 }
 
 type activeLocationResponse struct {
-	VaccinationGroup   string           `json:"vaccination_group"`
-	LastRefresh        int64            `json:"last_refresh"`
-	RefreshIntervalSec int              `json:"refresh_interval_sec"`
-	Locations          []activeLocation `json:"locations"`
-}
-
-func init() {
-	var geoLocations []geoLocation
-	plan, _ := ioutil.ReadFile(mappingLocation)
-	err := json.Unmarshal(plan, &geoLocations)
-	if err != nil {
-		log.Fatal("Location mapping seed read failure", err)
-	}
-
-	var mapping = make(map[string]geoLocation)
-	for _, location := range geoLocations {
-		mapping[location.Name] = location
-	}
-	geoMapping = mapping
-
+	*LocationResponseMetadata
+	Locations []activeLocation `json:"locations"`
 }
