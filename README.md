@@ -11,7 +11,7 @@ Its was just jupiter experiment (see original `vaccination_search.ipynb`) wrappe
 
 (If you are developing `zh.vacme.ch` and my requests bother you - just create issue here, and I will stop crawling)
 
-Currently, deployed to https://vacme.kloud.top with refresh interval 5 min and with my account for group `N`.
+Currently, deployed to https://vacme.kloud.top with refresh interval ~3 min and with my account for group `N`.
 
 zh.vacme.ch is for Zurich only, please check other cantons on https://foph-coronavirus.ch/vaccination/when-can-i-be-vaccinated/#cantons 
 
