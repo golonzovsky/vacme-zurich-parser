@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
@@ -9,6 +10,12 @@ import (
 	"sync"
 	"time"
 )
+
+const apiBase = "http://vacme-parser:5000" //todo extract to config viper
+//const apiBase = "http://localhost:5000"
+
+const mappingLocation = "locationMapping.json" //todo map from configmap or/and configurable viper
+//const mappingLocation = "/home/ax/project/next/vacme/api/locationMapping.json"
 
 var geoMapping map[string]geoLocation
 var respCache = RespCache{data: &fullLocationResp{}}
@@ -40,26 +47,38 @@ func (resp *fullLocationResp) initialized() bool {
 }
 
 func Locations(c *gin.Context) {
+	locations, err := getLocations()
+	if err != nil {
+		log.Warn(err)
+	}
 
+	if locations != nil {
+		c.JSON(200, locations)
+	} else {
+		c.JSON(500, nil)
+	}
+}
+
+func getLocations() (*fullLocationResp, error) {
 	respCache.mu.Lock() //todo this is naive locking. improve
 	defer respCache.mu.Unlock()
 
-	if !respCache.data.isValid() {
-		resp, err := fetchLocationData()
-		if err != nil {
-			if !respCache.data.initialized() {
-				log.Warnf("downstream call failed %s, and we dont have stale data to return", err)
-				c.JSON(500, nil)
-			} else {
-				log.Warnf("downstream call failed %s, but we have stale data to return", err)
-				c.JSON(200, respCache.data)
-			}
-			return
-		}
-		respCache.data = resp
+	if respCache.data.isValid() {
+		return respCache.data, nil
 	}
 
-	c.JSON(200, respCache.data)
+	resp, err := fetchLocationData()
+	if err == nil {
+		respCache.data = resp
+		return respCache.data, nil
+	}
+
+	if respCache.data.initialized() {
+		log.Warnf("downstream call failed %s, but we have stale data to return", err)
+		return respCache.data, fmt.Errorf("downstream call failed %s, but we have stale data to return", err)
+	}
+
+	return nil, fmt.Errorf("downstream call failed %s, and we dont have stale data to return", err)
 }
 
 func fetchLocationData() (*fullLocationResp, error) {
@@ -84,7 +103,10 @@ func fetchLocationData() (*fullLocationResp, error) {
 		geoData, ok := geoMapping[loc.Name]
 		if !ok {
 			log.Warnf("missing location in GEO mapping '%s'", loc.Name)
-			//todo use place API to fetch geo here
+			//todo use place API to fetch geo and url here
+			//curl -G --data-urlencode 'input=Zürich, Pfauen Apotheke' --data-urlencode 'inputtype=textquery' --data-urlencode 'fields=name,place_id,geometry/location' --data-urlencode 'key=???' https://maps.googleapis.com/maps/api/place/findplacefromtext/json | jq
+			//curl -G --data-urlencode 'place_id=ChIJcz-8JqygmkcRZwT5YWrkaok' --data-urlencode 'fields=url' --data-urlencode 'key=???' https://maps.googleapis.com/maps/api/place/details/json | jq
+			//but better just use https://github.com/googlemaps/google-maps-services-go
 		}
 		active, _ := activeMapping[loc.Name]
 		enhancedLocations = append(enhancedLocations, location{
@@ -106,9 +128,7 @@ func fetchLocationData() (*fullLocationResp, error) {
 }
 
 func fetchDropDownLocations() ([]location, error) {
-	httpResp, err := http.Get("http://vacme-parser:5000/api/locations") //todo extract to config viper
-	//httpResp, err := http.Get("https://vacme.kloud.top/api/locations")
-	//httpResp, err := http.Get("http://localhost:5000/api/locations")
+	httpResp, err := http.Get(apiBase + "/api/locations")
 	if err != nil {
 		return nil, err
 	}
@@ -127,9 +147,7 @@ func fetchDropDownLocations() ([]location, error) {
 }
 
 func fetchActiveLocations() (*activeLocationResponse, error) {
-	httpResp, err := http.Get("http://vacme-parser:5000/api/") //todo extract to config viper
-	//httpResp, err := http.Get("https://vacme.kloud.top/api/")
-	//httpResp, err := http.Get("http://localhost:5000/api/")
+	httpResp, err := http.Get(apiBase + "/api/")
 	if err != nil {
 		return nil, err
 	}
@@ -184,7 +202,7 @@ type activeLocationResponse struct {
 
 func init() {
 	var geoLocations []geoLocation
-	plan, _ := ioutil.ReadFile("locationMapping.json") //todo map from configmap or/and configurable viper
+	plan, _ := ioutil.ReadFile(mappingLocation)
 	err := json.Unmarshal(plan, &geoLocations)
 	if err != nil {
 		log.Fatal("Location mapping seed read failure", err)

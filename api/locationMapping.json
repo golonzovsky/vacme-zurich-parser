@@ -101,6 +101,7 @@
     {"name": "Wallisellen, Amavita Apotheke Glattzentrum", "latitude": 47.40863654725138, "longitude": 8.595047005607247, "link": "https://goo.gl/maps/iLCt2aDToqSgc6wi9"},
     {"name": "Stäfa, TopPharm Kranich Apotheke", "latitude": 47.241158130264054, "longitude": 8.722867061856798, "link": "https://goo.gl/maps/xs5aqvFzc3GsaU736"},
     {"name": "Zürich, Gesundhaus Falken Apotheke", "latitude": 47.41982233685353, "longitude": 8.548439069204747, "link": "https://goo.gl/maps/Em2FUm3ZyEYmojgc8"},
-    {"name": "Zürich, Pfauen Apotheke", "latitude": 47.37073474448501, "longitude": 8.549823022624535, "link": "https://goo.gl/maps/JeXjFLFudXFBb3xH9"}
+    {"name": "Zürich, Pfauen Apotheke", "latitude": 47.37073474448501, "longitude": 8.549823022624535, "link": "https://goo.gl/maps/JeXjFLFudXFBb3xH9"},
+    {"name": "Zürich, Toppharm Apotheke Höschgasse", "latitude": 47.35780439410665, "longitude": 8.555247625115385, "link": "https://goo.gl/maps/1wxLA7uPqB1nYRQTA"}
 
 ]
