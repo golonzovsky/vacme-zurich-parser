@@ -99,6 +99,8 @@
     {"name": "Zürich, Apotheke Utogrund", "latitude": 47.37922811601539, "longitude":  8.494885574746206, "link": "https://goo.gl/maps/cHfZDWKEmq2StD3fA"},
     {"name": "Dietikon, Coop Vitality Apotheke Silbern", "latitude": 47.41885317872628, "longitude": 8.392316634915154, "link": "https://goo.gl/maps/CWWsDXtPQnZkagQK6"},
     {"name": "Wallisellen, Amavita Apotheke Glattzentrum", "latitude": 47.40863654725138, "longitude": 8.595047005607247, "link": "https://goo.gl/maps/iLCt2aDToqSgc6wi9"},
-    {"name": "Stäfa, TopPharm Kranich Apotheke", "latitude": 47.241158130264054, "longitude": 8.722867061856798, "link": "https://goo.gl/maps/xs5aqvFzc3GsaU736"}
+    {"name": "Stäfa, TopPharm Kranich Apotheke", "latitude": 47.241158130264054, "longitude": 8.722867061856798, "link": "https://goo.gl/maps/xs5aqvFzc3GsaU736"},
+    {"name": "Zürich, Gesundhaus Falken Apotheke", "latitude": 47.41982233685353, "longitude": 8.548439069204747, "link": "https://goo.gl/maps/Em2FUm3ZyEYmojgc8"},
+    {"name": "Zürich, Pfauen Apotheke", "latitude": 47.37073474448501, "longitude": 8.549823022624535, "link": "https://goo.gl/maps/JeXjFLFudXFBb3xH9"}
 
 ]
