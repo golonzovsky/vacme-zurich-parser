@@ -102,6 +102,12 @@
     {"name": "Stäfa, TopPharm Kranich Apotheke", "latitude": 47.241158130264054, "longitude": 8.722867061856798, "link": "https://goo.gl/maps/xs5aqvFzc3GsaU736"},
     {"name": "Zürich, Gesundhaus Falken Apotheke", "latitude": 47.41982233685353, "longitude": 8.548439069204747, "link": "https://goo.gl/maps/Em2FUm3ZyEYmojgc8"},
     {"name": "Zürich, Pfauen Apotheke", "latitude": 47.37073474448501, "longitude": 8.549823022624535, "link": "https://goo.gl/maps/JeXjFLFudXFBb3xH9"},
-    {"name": "Zürich, Toppharm Apotheke Höschgasse", "latitude": 47.35780439410665, "longitude": 8.555247625115385, "link": "https://goo.gl/maps/1wxLA7uPqB1nYRQTA"}
+    {"name": "Zürich, Toppharm Apotheke Höschgasse", "latitude": 47.35780439410665, "longitude": 8.555247625115385, "link": "https://goo.gl/maps/1wxLA7uPqB1nYRQTA"},
+    {"name": "Regensdorf, Toppharm Zentrums Apotheke", "latitude": 47.43144381455154,  "longitude": 8.469631542315444, "link": "https://goo.gl/maps/SzhgiC44mjqqR6V96"},
+    {"name": "Birmensdorf, TopPharm Apotheke Drogerie Birmensdorf", "latitude": 47.35377058010878, "longitude": 8.436864858214442, "link": "https://goo.gl/maps/yz6ffy8khsE4Qjft7"},
+    {"name": "Feldmeilen, Apotheke im Zentrum", "latitude": 47.27972960977102,  "longitude": 8.615545692592217, "link": "https://goo.gl/maps/1ktxwgbLTzYWx4jS8"},
+    {"name": "Hombrechtikon, Mistel Apotheke AG", "latitude": 47.25200381627085, "longitude": 8.767708238616683, "link": "https://g.page/Mistel-Apotheke"},
+    {"name": "Winterthur, Toppharm Apotheke Wülflingen AG", "latitude": 47.510782694125176, "longitude": 8.693824490748291, "link": "https://goo.gl/maps/ZGNVfgAEcPnsdyfHA"},
+    {"name": "Zürich, Apotheke am Kreuzplatz", "latitude": 47.36526948311903, "longitude": 8.553985375404103, "link": "https://g.page/Kreuzplatz-Apotheke"}
 
 ]

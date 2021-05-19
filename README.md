@@ -6,10 +6,7 @@ This service (https://vacme.kloud.top) tries to simplify search by exposing rest
 Be aware is uses personal refresh token for existing registration and reverse engineered api, so its all quite fragile - any next update of vacme.ch can break it.  
 
 Main part if you want to reuse code is in `parser` folder. Its python app which periodically calls `zh.vacme.ch`, and exposes basic api for UI and caching layers.  
-Python is not my primary language, so I have no idea what I'm doin.. ¯\_(ツ)_/¯  
 Its was just jupiter experiment (see original `vaccination_search.ipynb`) wrapped into api and extended with token refresh.  
-
-(If you are developing `zh.vacme.ch` and my requests bother you - just create issue here, and I will stop crawling)
 
 Currently, deployed to https://vacme.kloud.top with refresh interval ~3 min and with my account for group `N`.
 
