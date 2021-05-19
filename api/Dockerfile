@@ -6,11 +6,9 @@ COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux go build -installsuffix cgo -o /server .
 
-#FROM alpine:latest
-FROM scratch
-#RUN apk --no-cache add ca-certificates
+FROM alpine:latest
+RUN apk --no-cache add ca-certificates
 COPY --from=builder /server /
 COPY locationMapping.json /
 EXPOSE 8000
-#CMD /server
 ENTRYPOINT ["/server"]

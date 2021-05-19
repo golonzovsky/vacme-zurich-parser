@@ -14,7 +14,13 @@ spec:
         app: vacme-api
     spec:
       containers:
-        - image: golonzovsky/vacme-api
+        - env:
+            - name: PLACE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: place_api_key
+                  name: vacme-parser
+          image: golonzovsky/vacme-api
           name: debug
           ports:
             - containerPort: 8000
@@ -36,6 +42,5 @@ metadata:
 spec:
   ports:
     - port: 8000
-      name: api
   selector:
     app: vacme-api
