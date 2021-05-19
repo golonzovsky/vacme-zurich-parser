@@ -108,6 +108,7 @@
     {"name": "Feldmeilen, Apotheke im Zentrum", "latitude": 47.27972960977102,  "longitude": 8.615545692592217, "link": "https://goo.gl/maps/1ktxwgbLTzYWx4jS8"},
     {"name": "Hombrechtikon, Mistel Apotheke AG", "latitude": 47.25200381627085, "longitude": 8.767708238616683, "link": "https://g.page/Mistel-Apotheke"},
     {"name": "Winterthur, Toppharm Apotheke Wülflingen AG", "latitude": 47.510782694125176, "longitude": 8.693824490748291, "link": "https://goo.gl/maps/ZGNVfgAEcPnsdyfHA"},
-    {"name": "Zürich, Apotheke am Kreuzplatz", "latitude": 47.36526948311903, "longitude": 8.553985375404103, "link": "https://g.page/Kreuzplatz-Apotheke"}
+    {"name": "Zürich, Apotheke am Kreuzplatz", "latitude": 47.36526948311903, "longitude": 8.553985375404103, "link": "https://g.page/Kreuzplatz-Apotheke"},
+    {"name": "Zürich, Amavita Apotheke Albisstrasse", "latitude": 47.33858989040137, "longitude": 8.530532615326285, "link": "https://g.page/amavita-albisstrasse?share"}
 
 ]
