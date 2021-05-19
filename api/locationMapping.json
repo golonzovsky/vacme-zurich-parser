@@ -146,5 +146,22 @@
     {"name":"Zürich, TopPharm Europaallee Apotheke","latitude":47.37817080000001,"longitude":8.5345344,"link":"https://maps.google.com/?cid=1905597125383106974"},
     {"name":"Zürich, Rigi Apotheke und Drogerie","latitude":47.3856901,"longitude":8.5487364,"link":"https://maps.google.com/?cid=10213533587576923526"},
     {"name":"Winterthur, DROPA Drogerie Apotheke Rosenberg","latitude":47.5186578,"longitude":8.720000200000001,"link":"https://maps.google.com/?cid=16678246290724676544"},
-    {"name":"Volketswil, Medbase Apotheke Volketswil","latitude":47.3882747,"longitude":8.6809034,"link":"https://maps.google.com/?cid=8251436618681825662"}
+    {"name":"Volketswil, Medbase Apotheke Volketswil","latitude":47.3882747,"longitude":8.6809034,"link":"https://maps.google.com/?cid=8251436618681825662"},
+    {"name":"Zürich, Dropa Apotheke Hottingen","latitude":47.3697741,"longitude":8.5557672,"link":"https://maps.google.com/?cid=2267132271243499477"},
+    {"name":"Stäfa, Dropa Stäfa AG","latitude":47.240899,"longitude":8.723884,"link":"https://maps.google.com/?cid=12705075587037333505"},
+    {"name":"Zürich, Pill Apotheke Fröhlichstrasse","latitude":47.3553406,"longitude":8.556954,"link":"https://maps.google.com/?cid=17347851998734677120"},
+    {"name":"Zürich, Schmiedegg Apotheke AG","latitude":47.3697443,"longitude":8.520557400000001,"link":"https://maps.google.com/?cid=5635537408000025343"},
+    {"name":"Uster, Dropa Drogerie Apotheke Illuster","latitude":47.3498907,"longitude":8.714990499999999,"link":"https://maps.google.com/?cid=15408597361138396525"},
+    {"name":"Winterthur, Coop Vitality Stadtgarten","latitude":47.5007955,"longitude":8.7259478,"link":"https://maps.google.com/?cid=12121518394734028927"},
+    {"name":"Wallisellen, Medbase Apotheke Wallisellen","latitude":47.4134,"longitude":8.5920183,"link":"https://maps.google.com/?cid=1829070333358928795"},
+    {"name":"Kloten, Drogerie Apotheke am Stadtplatz","latitude":47.4504078,"longitude":8.5830597,"link":"https://maps.google.com/?cid=11754451488094717415"},
+    {"name":"Kloten, Rex Apotheke","latitude":47.45098489999999,"longitude":8.5807918,"link":"https://maps.google.com/?cid=1554987955854332394"},
+    {"name":"Winterthur, Steinberg Apotheke AG","latitude":47.498074,"longitude":8.728064,"link":"https://maps.google.com/?cid=10803391205075366953"},
+    {"name":"Hinwil, APODRO Apotheke Hinwil","latitude":47.3007678,"longitude":8.8428914,"link":"https://maps.google.com/?cid=15471060986908665000"},
+    {"name":"Schlieren, Apotheke Dr Kunz Schlieren","latitude":47.3999376,"longitude":8.441480499999999,"link":"https://maps.google.com/?cid=18400391442648002538"},
+    {"name":"Dübendorf, Bahnhof Apotheke Stettbach","latitude":47.3969353,"longitude":8.5976064,"link":"https://maps.google.com/?cid=4139550572424744988"},
+    {"name":"Winterthur, Coop Vitality Apotheke Grüze Markt","latitude":47.4954793,"longitude":8.7587459,"link":"https://maps.google.com/?cid=4424524432525507745"},
+    {"name":"Thalwil, Apotheke Drogerie Hirsig","latitude":47.29468338789111, "longitude":8.564372604238336,"link":"https://goo.gl/maps/PAtzoo1rTzp1XETZ9"},
+    {"name":"Zürich, Medbase Apotheke Zürich Nord","latitude":47.41879946697546, "longitude":8.507326406088376,"link":"https://goo.gl/maps/EXHufZWt5JmWn74b9"},
+    {"name":"Regensdorf, Amavita Apotheke Regensdorf","latitude":47.43084806256792, "longitude":8.469780500544939,"link":"https://g.page/amavita-regensdorf"}
 ]

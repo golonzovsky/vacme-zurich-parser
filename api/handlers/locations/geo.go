@@ -40,7 +40,7 @@ func geoByName(name string) (*geoLocation, error) {
 	geoData, err := doGeoLookup(name)
 	if err != nil || geoData == nil {
 		geoLookupFailed[name] = true
-		log.Warnf("Geo lookup failed for %s. Will not do it again until restart: %v", name, err)
+		log.Warnf("Geo lookup failed for '%s'. Will not do it again until restart: %v", name, err)
 		return nil, err
 	}
 	geoMapping[name] = *geoData
