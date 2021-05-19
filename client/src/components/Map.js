@@ -20,7 +20,7 @@ function Map({locations, selectedLocation}) {
     const [viewport, setViewport] = useState({
         latitude: 47.377909732589615,
         longitude: 8.540479916024365,
-        zoom: 11
+        zoom: 12
     });
 
     useEffect(() => {
