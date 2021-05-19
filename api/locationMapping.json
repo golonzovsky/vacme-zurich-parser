@@ -163,5 +163,6 @@
     {"name":"Winterthur, Coop Vitality Apotheke Grüze Markt","latitude":47.4954793,"longitude":8.7587459,"link":"https://maps.google.com/?cid=4424524432525507745"},
     {"name":"Thalwil, Apotheke Drogerie Hirsig","latitude":47.29468338789111, "longitude":8.564372604238336,"link":"https://goo.gl/maps/PAtzoo1rTzp1XETZ9"},
     {"name":"Zürich, Medbase Apotheke Zürich Nord","latitude":47.41879946697546, "longitude":8.507326406088376,"link":"https://goo.gl/maps/EXHufZWt5JmWn74b9"},
-    {"name":"Regensdorf, Amavita Apotheke Regensdorf","latitude":47.43084806256792, "longitude":8.469780500544939,"link":"https://g.page/amavita-regensdorf"}
+    {"name":"Regensdorf, Amavita Apotheke Regensdorf","latitude":47.43084806256792, "longitude":8.469780500544939,"link":"https://g.page/amavita-regensdorf"},
+    {"name":"Bauma, Tösstal-Apotheke","latitude":47.36716431606081,"longitude":8.879343940758048,"link":"https://goo.gl/maps/ZxA5N16BVcPbJbXp7"}
 ]

@@ -43,12 +43,14 @@ Example response:
       "link": "https://goo.gl/maps/8VFBvGnSGrZJLHW98"
     },
     {
-      "name": "Affoltern, Amavita Apotheke Affoltern a. A.",
-      "id": "02a43092-5990-44f7-9d28-2b7414668347",
-      "noFreieTermine": true,
-      "latitude": 47.27729486909392,
-      "longitude": 8.44968738334539,
-      "link": "https://g.page/amavita-affoltern-am-albis"
+      "name": "_Impfzentrum Wetzikon",
+      "id": "fcfae361-7a74-481d-bc6b-e257e1ddb1de",
+      "noFreieTermine": false,
+      "firstDate": 1623067200000,
+      "secondDate": 1625486400000,
+      "latitude": 47.31518772182702,
+      "longitude": 8.79995562696232,
+      "link": "https://goo.gl/maps/J9sD4ByixUrAQaes9"
     },
     .....
   ]
