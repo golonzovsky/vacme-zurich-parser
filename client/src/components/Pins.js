@@ -10,23 +10,30 @@ const SIZE = 30;
 
 function Pins({data, onClick}) {
 
-    return data.filter(l => l.latitude).map((location, index) => (
-        <Marker key={`marker-${index}`} longitude={location.longitude} latitude={location.latitude}>
-            <svg
-                height={SIZE}
-                viewBox="0 0 24 24"
-                style={{
-                    cursor: 'pointer',
-                    fill: location.secondDate ? '#d00' : '#777',
-                    stroke: 'none',
-                    transform: `translate(${-SIZE / 2}px,${-SIZE}px)`
-                }}
-                onClick={() => onClick(location)}
-            >
-                <path d={ICON}/>
-            </svg>
-        </Marker>
-    ));
+    function hasAppointment(location) {
+        return location.secondDate;
+    }
+
+    return data
+        .filter(l => l.latitude)
+        .sort((a, b) => hasAppointment(a) ? 1 : -1)
+        .map((location, index) => (
+            <Marker key={`marker-${index}`} longitude={location.longitude} latitude={location.latitude}>
+                <svg
+                    height={SIZE}
+                    viewBox="0 0 24 24"
+                    style={{
+                        cursor: 'pointer',
+                        fill: hasAppointment(location) ? '#d00' : '#777',
+                        stroke: 'none',
+                        transform: `translate(${-SIZE / 2}px,${-SIZE}px)`
+                    }}
+                    onClick={() => onClick(location)}
+                >
+                    <path d={ICON}/>
+                </svg>
+            </Marker>
+        ));
 }
 
 export default React.memo(Pins);
