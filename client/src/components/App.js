@@ -30,26 +30,6 @@ function App() {
         useEffect(() => {
             setData(dummyResp)
         }, []);*/
-    useEffect(() => {
-        Modal.info({
-            title: 'Data is outdated',
-            width: 800,
-            closable: false,
-            content: (
-                <div>
-                    <div style={{paddingTop: '30px'}}>
-                        <Text>It seems, <a href='https://zh.vacme.ch'>https://zh.vacme.ch</a> 'improved' their bot detection, which prevents our scraping.</Text>
-                    </div>
-                    <div style={{paddingTop: '30px'}}>
-                        <Text>Check other parser <a href='https://rimpfli.web.app'>https://rimpfli.web.app</a> - it seems they still manage to crawl.</Text>
-                    </div>
-                    <div style={{paddingTop: '30px'}}>
-                        <Text type='secondary'>We are working on a fix. Until its done - data will be stale/partial.</Text>
-                    </div>
-                </div>
-            ),
-        });
-    }, []);
 
     return (
         <Layout style={{minHeight: "100vh"}}>

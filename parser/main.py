@@ -21,11 +21,12 @@ app_config = {
 }
 
 headers = {
-    'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:88.0) Gecko/20100101 Firefox/88.0cd',
+    'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:88.0) Gecko/20100101 Firefox/88.0',
     'Accept': 'application/json',
     'Referer': 'https://zh.vacme.ch/',
     'Content-Type': 'application/json',
     'Origin': 'https://zh.vacme.ch',
+    'Host': 'zh.vacme.ch',
     'Authorization': '',
 }
 
@@ -44,19 +45,22 @@ dropdown_locations = {
 running_in_k8s_cluster = False
 
 
-def do_request_first_appointment(location_id):
+def do_request_first_appointment(location_id, name):
     resp = requests.post('https://zh.vacme.ch/api/v1/reg/dossier/termine/nextfrei/{}/ERSTE_IMPFUNG'.format(location_id),
                          headers=headers)
+
+    if resp.status_code == 204:
+        return ''
+
     if resp.status_code == 200:
         return resp.json()
-    elif resp.status_code == 204:
-        return ''
-    else:
-        logging.error("unexpected response do_request_first_appointment %s", resp.status_code)
-        return ''
+
+    logging.error("unexpected response %s do_request_first_appointment for '%s' (%s)",
+                  resp.status_code, name, location_id, )
+    return ''
 
 
-def do_request_second_appointment(location_id, next_date):
+def do_request_second_appointment(location_id, next_date, name):
     data = '{"nextDate": "%s"}' % next_date
     resp = requests.post(
         'https://zh.vacme.ch/api/v1/reg/dossier/termine/nextfrei/{}/ZWEITE_IMPFUNG'.format(location_id),
@@ -64,11 +68,12 @@ def do_request_second_appointment(location_id, next_date):
 
     if resp.status_code == 200:
         return resp.json()
-    elif resp.status_code == 204:
-        return ''
-    else:
-        logging.error("unexpected response do_request_second_appointment %s", resp.status_code)
-        return ''
+
+    if resp.status_code != 204:
+        logging.error("unexpected response %s do_request_second_appointment for '%s' (%s)",
+                      resp.status_code, name, location_id)
+
+    return ''
 
 
 def fetch_all_locations():
@@ -77,6 +82,7 @@ def fetch_all_locations():
 
     if resp_full.headers.get('content-type') != 'application/json':
         logging.error("unexpected response fetch_all_locations status:%s %s", resp_full.status_code, resp_full.text)
+        dropdown_locations['locations'] = []  # reset list to prevent requesting stale ones
         return
 
     resp = resp_full.json()
@@ -142,34 +148,44 @@ def update_token_secret(new_token):
     client.CoreV1Api().patch_namespaced_secret("vacme-parser", "vacme", body, pretty=True)
 
 
-def fetch_location_with_available_first_appointment():
+def fetch_location_with_available_first_appointment(locations):
     next_first_date_locations = []
 
-    for location in dropdown_locations['locations']:
+    for location in locations:
         if location.get('noFreieTermine'):
             # skip prefiltered from server
             continue
 
-        resp = do_request_first_appointment(location['id'])
+        location_id = location['id']
+        resp = do_request_first_appointment(location_id, location['name'])
         if resp != '':
             logging.info("found first location: %s %s", location['name'], resp)
+            next_date = resp['nextDate']
+            #do_request_first_appointment_info(location_id, next_date)
             next_first_date_locations.append({
-                'locationId': location['id'],
+                'locationId': location_id,
                 'name': location['name'],
-                'nextDate': resp['nextDate'],
-                'nextDateMillis': parse_date_to_milli(resp['nextDate'])
+                'nextDate': next_date,
+                'nextDateMillis': parse_date_to_milli(next_date)
             })
-        time.sleep(1)  # dunno, dude.. maybe this will keep this obnoxious WAF chill.. I'm out of ideas
+        time.sleep(3)  # dunno, dude.. maybe this will keep this obnoxious WAF chill.. I'm out of ideas
 
-    next_first_date_locations.sort(key=lambda x: x['nextDateMillis'])
     logging.info("found %s first appointments", len(next_first_date_locations))
+    next_first_date_locations.sort(key=lambda x: x['nextDateMillis'])
     return next_first_date_locations
+
+
+def do_request_first_appointment_info(location_id, date):
+    data = '{"nextDate": "%s"}' % date
+    first_app_info = requests.post('https://zh.vacme.ch/api/v1/reg/dossier/termine/frei/{}/ERSTE_IMPFUNG'.format(location_id),
+                            headers=headers, data=data)
+    logging.debug("do_request_first_appointment_info %s %s", first_app_info.status_code, first_app_info.text)
 
 
 def fetch_locations_with_both_appointments(locations):
     next_second_locations = []
     for next in locations:
-        resp = do_request_second_appointment(next['locationId'], next['nextDate'])
+        resp = do_request_second_appointment(next['locationId'], next['nextDate'], next['name'])
         if resp != '':
             available = {'name': next['name'],
                          'firstDate': next['nextDateMillis'],
@@ -177,7 +193,7 @@ def fetch_locations_with_both_appointments(locations):
                          }
             logging.info("found location with both available: %s %s", next['name'], available)
             next_second_locations.append(available)
-        time.sleep(1)   # dunno, dude.. maybe this will keep this obnoxious WAF chill.. I'm out of ideas
+        time.sleep(3)   # dunno, dude.. maybe this will keep this obnoxious WAF chill.. I'm out of ideas
 
     logging.info("found %s locations with both appointments", len(next_second_locations))
     return next_second_locations
@@ -192,12 +208,10 @@ def now_millis():
 
 
 def update_caches():
-    logging.info("update caches")
-
     ensure_token()
 
     fetch_all_locations()
-    first_available = fetch_location_with_available_first_appointment()
+    first_available = fetch_location_with_available_first_appointment(dropdown_locations['locations'])
     both_available = fetch_locations_with_both_appointments(first_available)
 
     cache['locations'] = both_available
@@ -228,8 +242,7 @@ if __name__ == "__main__":
     except Exception:
         logging.info("Running out of cluster, secret updates disabled")
 
-    logging.info("Starting vacme parser")
-    #update_caches()
+    update_caches()
 
     scheduler = BackgroundScheduler()
     scheduler.add_job(func=update_caches, trigger="interval", seconds=app_config['refresh_interval_sec'])
