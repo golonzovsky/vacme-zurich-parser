@@ -34,8 +34,7 @@ cache = {
     'locations': [],
     'last_refresh': None,
     'refresh_interval_sec': app_config['refresh_interval_sec'],
-    'vaccination_group': 'N',
-    'source': 'https://github.com/golonzovsky/vacme-zurich-parser',
+    'vaccination_group': 'N'
 }
 
 dropdown_locations = {
@@ -82,8 +81,7 @@ def fetch_all_locations():
 
     if resp_full.headers.get('content-type') != 'application/json':
         logging.error("unexpected response fetch_all_locations status:%s %s", resp_full.status_code, resp_full.text)
-        dropdown_locations['locations'] = []  # reset list to prevent requesting stale ones
-        return
+        return []
 
     resp = resp_full.json()
     logging.info("found %s possible locations", len(resp))
@@ -117,10 +115,13 @@ def do_refresh_token():
                  "Exiting.")
 
     if resp.headers.get('content-type') == 'text/html':
-        logging.error('token refresh require captcha to be solved.'
-                      'Open https://zh.vacme.ch in your browser. (token response content-type:text/html): %s',
-                      resp.text)
-        sys.exit("Cannot recover token. Probably captcha required. Exiting.")
+        if '<!-- CAPTCHA -->' in resp.text:
+            logging.error('token refresh require captcha to be solved. Open https://zh.vacme.ch in your browser. '
+                          '(token response content-type:text/html): %s, headers: %s', resp.text, resp.headers)
+        else:
+            logging.error('token refresh require failed unexpected. (token response content-type:text/html): '
+                          '%s, headers: %s', resp.text, resp.headers)
+        sys.exit("Cannot recover token. Exiting.")
 
     resp_json = resp.json()
     new_refresh_token = resp_json['refresh_token']
@@ -161,7 +162,7 @@ def fetch_location_with_available_first_appointment(locations):
         if resp != '':
             logging.info("found first location: %s %s", location['name'], resp)
             next_date = resp['nextDate']
-            #do_request_first_appointment_info(location_id, next_date)
+            # do_request_first_appointment_info(location_id, next_date)
             next_first_date_locations.append({
                 'locationId': location_id,
                 'name': location['name'],
@@ -177,8 +178,8 @@ def fetch_location_with_available_first_appointment(locations):
 
 def do_request_first_appointment_info(location_id, date):
     data = '{"nextDate": "%s"}' % date
-    first_app_info = requests.post('https://zh.vacme.ch/api/v1/reg/dossier/termine/frei/{}/ERSTE_IMPFUNG'.format(location_id),
-                            headers=headers, data=data)
+    first_app_info = requests.post('https://zh.vacme.ch/api/v1/reg/dossier/termine/frei/{}/ERSTE_IMPFUNG'
+                                   .format(location_id), headers=headers, data=data)
     logging.debug("do_request_first_appointment_info %s %s", first_app_info.status_code, first_app_info.text)
 
 
@@ -193,7 +194,7 @@ def fetch_locations_with_both_appointments(locations):
                          }
             logging.info("found location with both available: %s %s", next['name'], available)
             next_second_locations.append(available)
-        time.sleep(3)   # dunno, dude.. maybe this will keep this obnoxious WAF chill.. I'm out of ideas
+        time.sleep(3)  # dunno, dude.. maybe this will keep this obnoxious WAF chill.. I'm out of ideas
 
     logging.info("found %s locations with both appointments", len(next_second_locations))
     return next_second_locations
@@ -210,8 +211,8 @@ def now_millis():
 def update_caches():
     ensure_token()
 
-    fetch_all_locations()
-    first_available = fetch_location_with_available_first_appointment(dropdown_locations['locations'])
+    locations = fetch_all_locations()
+    first_available = fetch_location_with_available_first_appointment(locations)
     both_available = fetch_locations_with_both_appointments(first_available)
 
     cache['locations'] = both_available
