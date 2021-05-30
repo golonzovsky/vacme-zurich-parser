@@ -120,7 +120,7 @@ def do_refresh_token():
     if resp.headers.get('content-type') == 'text/html':
         if '<!-- CAPTCHA -->' in resp.text:
             captcha_image = requests.get('https://zh.vacme.ch/captcha/fortiadc_captcha_image')
-            logging.error('token refresh require captcha to be solved. headers: %s, image: %s',
+            logging.error('token refresh require captcha to be solved. headers: %s, base64image: %s',
                           resp.headers, base64.b64encode(captcha_image.content))
             # todo upload to gcs with hash name
         else:
