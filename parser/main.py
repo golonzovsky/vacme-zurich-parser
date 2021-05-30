@@ -114,8 +114,7 @@ def do_refresh_token():
         sys.exit("Cannot recover token. IP is blocked, please recreate NAT ip. Exiting.")
 
     if resp.status_code != 200:
-        logging.error("token refresh failed. status:%s content-type:%s. %s",
-                      resp.status_code, resp.headers.get('content-type'), resp.text)
+        logging.error("token refresh failed. status:%s, headers:%s, text:%s", resp.status_code, resp.headers, resp.text)
         sys.exit("Cannot recover token. Either seed token is stale, or SMS login is required. Exiting.")
 
     if resp.headers.get('content-type') == 'text/html':
