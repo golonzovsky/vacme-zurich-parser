@@ -107,17 +107,23 @@ def do_refresh_token():
     }
     resp = requests.post('https://zh.vacme.ch/auth/realms/vacme/protocol/openid-connect/token', data=req)
 
+    if resp.status_code == 403 and '<iframe src="/lb/403.html"' in resp.text:
+        logging.error("token refresh failed. status:%s content-type:%s. %s", resp.status_code,
+                      resp.headers.get('content-type'), resp.text)
+        # todo change nat ip programmatically here
+        sys.exit("Cannot recover token. IP is blocked, please recreate NAT ip. Exiting.")
+
     if resp.status_code != 200:
         logging.error("token refresh failed. status:%s content-type:%s. %s",
                       resp.status_code, resp.headers.get('content-type'), resp.text)
-        sys.exit("Cannot recover token. "
-                 "Either seed token is stale, or IP is blocked, or SMS login is required. "
-                 "Exiting.")
+        sys.exit("Cannot recover token. Either seed token is stale, or SMS login is required. Exiting.")
 
     if resp.headers.get('content-type') == 'text/html':
         if '<!-- CAPTCHA -->' in resp.text:
-            logging.error('token refresh require captcha to be solved. Open https://zh.vacme.ch in your browser. '
-                          '(token response content-type:text/html): %s, headers: %s', resp.text, resp.headers)
+            captcha_image = requests.get('https://zh.vacme.ch/captcha/fortiadc_captcha_image')
+            logging.error('token refresh require captcha to be solved. headers: %s, image: %s',
+                          resp.headers, base64.b64encode(captcha_image.content))
+            # todo upload to gcs with hash name
         else:
             logging.error('token refresh require failed unexpected. (token response content-type:text/html): '
                           '%s, headers: %s', resp.text, resp.headers)
