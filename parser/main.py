@@ -112,14 +112,19 @@ def do_refresh_token():
         # todo change nat ip programmatically here
         sys.exit("Cannot recover token. IP is blocked, please recreate NAT ip. Exiting.")
 
+    if resp.status_code == 400 and 'Token is not active' in resp.text:
+        logging.error("refresh token expired. Cleaning secret to fail fast. status:%s", resp.status_code)
+        update_token_secret("")
+        sys.exit("Refresh token expired, relogin. Exiting.")
+
     if resp.status_code != 200:
         logging.error("token refresh failed. status:%s, headers:%s, text:%s", resp.status_code, resp.headers, resp.text)
         sys.exit("Cannot recover token. Either seed token is stale, or SMS login is required. Exiting.")
 
     if resp.headers.get('content-type') == 'text/html':
         if '<!-- CAPTCHA -->' in resp.text:
-            #captcha_image = requests.get('https://zh.vacme.ch/captcha/fortiadc_captcha_image')
-            #logging.error('token refresh require captcha to be solved. headers: %s, base64image: %s', resp.headers, base64.b64encode(captcha_image.content))
+            # captcha_image = requests.get('https://zh.vacme.ch/captcha/fortiadc_captcha_image')
+            # logging.error('token refresh require captcha to be solved. headers: %s, base64image: %s', resp.headers, base64.b64encode(captcha_image.content))
             logging.error('token refresh require captcha to be solved. headers: %s', resp.headers)
             # todo upload to gcs with hash name
         else:
