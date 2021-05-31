@@ -125,11 +125,11 @@ def do_refresh_token():
         if '<!-- CAPTCHA -->' in resp.text:
             # captcha_image = requests.get('https://zh.vacme.ch/captcha/fortiadc_captcha_image')
             # logging.error('token refresh require captcha to be solved. headers: %s, base64image: %s', resp.headers, base64.b64encode(captcha_image.content))
-            logging.error('token refresh require captcha to be solved. headers: %s', resp.headers)
             # todo upload to gcs with hash name
+            logging.error('token refresh require captcha to be solved. headers: %s', resp.headers)
         else:
-            logging.error('token refresh require failed unexpected. (token response content-type:text/html): '
-                          '%s, headers: %s', resp.text, resp.headers)
+            logging.error('token refresh failed in a new unexpected way. (token response content-type:text/html): '
+                          'headers: %s, text: %s', resp.headers, resp.text)
         sys.exit("Cannot recover token. Exiting.")
 
     resp_json = resp.json()
