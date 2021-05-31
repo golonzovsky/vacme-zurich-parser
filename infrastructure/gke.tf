@@ -36,7 +36,7 @@ resource "google_container_cluster" "primary" {
 resource "google_container_node_pool" "primary_preemptible_nodes" {
   name       = "preemptible-e2-medium"
   cluster    = google_container_cluster.primary.name
-  node_count = 2
+  node_count = 3
 
   node_config {
     preemptible  = true
@@ -63,7 +63,7 @@ resource "helm_release" "cert_manager" {
   repository = "https://charts.jetstack.io"
   chart      = "cert-manager"
   name       = "cert-manager"
-  version    = "v1.1.0"
+  version    = "v1.3.1"
   namespace  = kubernetes_namespace.cert_manager.metadata[0].name
 
   set {
@@ -92,7 +92,7 @@ resource "helm_release" "nginx_ingress" {
   chart      = "ingress-nginx"
   name       = "nginx-ingress"
   namespace  = kubernetes_namespace.ingress_controller.metadata[0].name
-  version    = "3.29.0"
+  version    = "3.31.0"
 
   values = [
     templatefile(
