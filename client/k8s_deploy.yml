@@ -14,7 +14,7 @@ spec:
         app: vacme-ui
     spec:
       containers:
-        - name: vacme-parser
+        - name: vacme-ui
           image: golonzovsky/vacme-parser-ui:latest
 ---
 apiVersion: v1
