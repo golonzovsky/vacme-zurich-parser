@@ -13,6 +13,7 @@ func main() {
 	r := gin.New()
 	r.Use(loggerIgnoreHealth(), gin.Recovery())
 	r.GET("/health", handlers.Ok)
+	r.GET("/metrics", handlers.PrometheusHandler())
 
 	//v2 := r.Group("/api/v2")
 	r.POST("/api/v2/log", handlers.Log) //todo rename to twillio callback and check hmac(sha1)

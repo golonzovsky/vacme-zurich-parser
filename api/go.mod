@@ -10,6 +10,7 @@ require (
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
+	github.com/prometheus/client_golang v1.10.0 // indirect
 	github.com/sfreiberg/gotwilio v0.0.0-20201211181435-c426a3710ab5 // indirect
 	github.com/sirupsen/logrus v1.8.1
 	github.com/ugorji/go v1.2.5 // indirect

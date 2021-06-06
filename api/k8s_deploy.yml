@@ -12,6 +12,10 @@ spec:
     metadata:
       labels:
         app: vacme-api
+      annotations:
+        prometheus.io/path: /metrics
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
     spec:
       containers:
         - env:

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/golonzovsky/vacme/handlers"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
@@ -58,6 +59,7 @@ func Locations(c *gin.Context) {
 func getLocations() (*fullLocationResp, error) {
 	respCache.mu.Lock() //todo this is naive locking. improve
 	defer respCache.mu.Unlock()
+	defer updatePrometheus()
 
 	if respCache.data.isValid() {
 		return respCache.data, nil
@@ -75,6 +77,18 @@ func getLocations() (*fullLocationResp, error) {
 	}
 
 	return nil, fmt.Errorf("downstream call failed %s, and we dont have stale data to return", err)
+}
+
+func updatePrometheus() {
+	handlers.LocationsTotalCount.Set(float64(len(respCache.data.Locations)))
+
+	var activeLocations int
+	for _, loc := range respCache.data.Locations {
+		if loc.activeLocation.SecondDate != 0 {
+			activeLocations++
+		}
+	}
+	handlers.LocationsActiveCount.Set(float64(activeLocations))
 }
 
 func fetchLocationData() (*fullLocationResp, error) {
@@ -105,6 +119,7 @@ func fetchLocationData() (*fullLocationResp, error) {
 		LocationResponseMetadata: metadata,
 		Locations:                enhancedLocations,
 	}
+	handlers.LastSuccessfulFetchTime.SetToCurrentTime()
 	return &resp, nil
 }
 
