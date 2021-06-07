@@ -11,9 +11,9 @@ func main() {
 	initLogger()
 
 	r := gin.New()
-	r.Use(loggerIgnoreHealth(), gin.Recovery())
+	r.Use(loggerIgnoreSysPaths(), gin.Recovery())
 	r.GET("/health", handlers.Ok)
-	r.GET("/metrics", handlers.PrometheusHandler())
+	r.GET("/metrics", handlers.PrometheusMetrics())
 
 	//v2 := r.Group("/api/v2")
 	r.POST("/api/v2/log", handlers.Log) //todo rename to twillio callback and check hmac(sha1)
@@ -22,9 +22,9 @@ func main() {
 	r.Run("0.0.0.0:8000")
 }
 
-func loggerIgnoreHealth() gin.HandlerFunc {
+func loggerIgnoreSysPaths() gin.HandlerFunc {
 	return gin.LoggerWithConfig(gin.LoggerConfig{
-		SkipPaths: []string{"/health"},
+		SkipPaths: []string{"/health", "/metrics"},
 	})
 }
 

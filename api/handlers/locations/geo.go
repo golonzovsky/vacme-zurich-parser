@@ -10,10 +10,8 @@ import (
 	"os"
 )
 
-const mappingLocation = "locationMapping.json" //todo map from configmap or/and configurable viper
-//const mappingLocation = "/home/ax/project/next/vacme/api/locationMapping.json"
-
-var placeApiKey = os.Getenv("PLACE_API_KEY")
+var placeApiKey = os.Getenv("PLACE_API_KEY") //todo map from configmap or/and configurable viper
+var mappingLocation = os.Getenv("MAPPING_LOCATION")
 
 var geoMapping = make(map[string]geoLocation)
 var geoLookupFailed = make(map[string]bool)

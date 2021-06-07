@@ -24,6 +24,10 @@ spec:
                 secretKeyRef:
                   key: place_api_key
                   name: vacme-parser
+            - name: MAPPING_LOCATION
+              value: "locationMapping.json"
+            - name: PARSER_API_BASE
+              value: "http://vacme-parser:5000"
           image: golonzovsky/vacme-api
           name: debug
           ports:

@@ -1,10 +1,6 @@
-package handlers
+package prometheus
 
-import (
-	"github.com/gin-gonic/gin"
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
-)
+import "github.com/prometheus/client_golang/prometheus"
 
 var LocationsTotalCount = prometheus.NewGauge(prometheus.GaugeOpts{
 	Name: "vacme_location_count",
@@ -20,14 +16,11 @@ var LastSuccessfulFetchTime = prometheus.NewGauge(prometheus.GaugeOpts{
 	Help: "time of last successful update",
 })
 
+var DataStaleForMs = prometheus.NewGauge(prometheus.GaugeOpts{
+	Name: "vacme_data_stale_sec",
+	Help: "age of data from parser",
+})
+
 func init() {
-	prometheus.MustRegister(LocationsTotalCount, LocationsActiveCount, LastSuccessfulFetchTime)
-}
-
-func PrometheusHandler() gin.HandlerFunc {
-	h := promhttp.Handler()
-
-	return func(c *gin.Context) {
-		h.ServeHTTP(c.Writer, c.Request)
-	}
+	prometheus.MustRegister(LocationsTotalCount, LocationsActiveCount, LastSuccessfulFetchTime, DataStaleForMs)
 }

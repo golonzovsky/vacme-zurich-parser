@@ -4,16 +4,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/golonzovsky/vacme/handlers"
+	"github.com/golonzovsky/vacme/prometheus"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"sync"
 	"time"
 )
 
-const apiBase = "http://vacme-parser:5000" //todo extract to config viper
-//const apiBase = "http://localhost:5000"
+var apiBase = os.Getenv("PARSER_API_BASE") //todo extract to config viper
 
 var respCache = RespCache{data: &fullLocationResp{LocationResponseMetadata: &LocationResponseMetadata{}}}
 
@@ -22,21 +22,27 @@ type RespCache struct {
 	data *fullLocationResp
 }
 
+func (resp *fullLocationResp) timeTillNextRefresh() time.Duration {
+	nextRefreshTime := time.Unix(resp.LastRefresh/1000, resp.LastRefresh%1000).Add(time.Second * time.Duration(resp.RefreshIntervalSec))
+	return nextRefreshTime.Sub(time.Now())
+}
+
 func (resp *fullLocationResp) isValid() bool {
 	if resp.LastRefresh == 0 {
 		log.Debugf("initial cache warmup")
 		return false
 	}
 
-	nextRefresh := time.Unix(resp.LastRefresh/1000, resp.LastRefresh%1000).Add(time.Second * time.Duration(resp.RefreshIntervalSec))
-	refreshIsInFuture := time.Now().Before(nextRefresh)
-
+	tillNextRefresh := resp.timeTillNextRefresh()
+	refreshIsInFuture := tillNextRefresh > 0
 	if refreshIsInFuture {
-		log.Debugf("time till next refresh %s", nextRefresh.Sub(time.Now()))
+		log.Debugf("time till next refresh %s", tillNextRefresh)
+		prometheus.DataStaleForMs.Set(0)
 	} else {
-		log.Debugf("data is stale for %s, refreshing", time.Now().Sub(nextRefresh))
+		log.Debugf("data is stale for %s, refreshing", -tillNextRefresh)
+		prometheus.DataStaleForMs.Set(-tillNextRefresh.Seconds())
 	}
-	return refreshIsInFuture
+	return resp.timeTillNextRefresh() > 0
 }
 
 func (resp *fullLocationResp) initialized() bool {
@@ -80,7 +86,7 @@ func getLocations() (*fullLocationResp, error) {
 }
 
 func updatePrometheus() {
-	handlers.LocationsTotalCount.Set(float64(len(respCache.data.Locations)))
+	prometheus.LocationsTotalCount.Set(float64(len(respCache.data.Locations)))
 
 	var activeLocations int
 	for _, loc := range respCache.data.Locations {
@@ -88,7 +94,7 @@ func updatePrometheus() {
 			activeLocations++
 		}
 	}
-	handlers.LocationsActiveCount.Set(float64(activeLocations))
+	prometheus.LocationsActiveCount.Set(float64(activeLocations))
 }
 
 func fetchLocationData() (*fullLocationResp, error) {
@@ -119,7 +125,7 @@ func fetchLocationData() (*fullLocationResp, error) {
 		LocationResponseMetadata: metadata,
 		Locations:                enhancedLocations,
 	}
-	handlers.LastSuccessfulFetchTime.SetToCurrentTime()
+	prometheus.LastSuccessfulFetchTime.SetToCurrentTime()
 	return &resp, nil
 }
 
