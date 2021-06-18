@@ -70,11 +70,12 @@ def do_request_second_appointment(location_id, next_date, name):
     if resp.status_code == 200:
         return resp.json()
 
-    if resp.status_code != 204:
-        logging.error("unexpected response %s do_request_second_appointment for '%s' (%s)",
-                      resp.status_code, name, location_id)
+    if resp.status_code == 204:
+        return ''
 
-    return ''
+    logging.error("unexpected response %s do_request_second_appointment for '%s' (%s): %s",
+                  resp.status_code, name, location_id, resp.text)
+    sys.exit("failed calls to do_request_second_appointment, exiting")
 
 
 def fetch_all_locations():
