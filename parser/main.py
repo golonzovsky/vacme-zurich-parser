@@ -12,6 +12,8 @@ from flask import Flask
 from flask import jsonify
 from kubernetes import client, config
 
+THROTTLE_INTERVAL_SEC = 1
+
 app = Flask(__name__)
 
 app_config = {
@@ -109,7 +111,7 @@ def do_refresh_token():
 
     if resp.status_code == 403 and '<iframe src="/lb/403.html"' in resp.text:
         logging.error("token refresh failed. status:%s headers:%s", resp.status_code, resp.headers)
-        # todo change nat ip programmatically here
+        # todo change NAT ip programmatically here
         sys.exit("Cannot recover token. IP is blocked, please recreate NAT ip. Exiting.")
 
     if resp.status_code == 400 and 'Token is not active' in resp.text:
@@ -168,17 +170,16 @@ def fetch_location_with_available_first_appointment(locations):
 
         location_id = location['id']
         resp = do_request_first_appointment(location_id, location['name'])
-        if resp != '':
+        if resp != '':  # todo fail fast here? or retry?
             logging.info("found first location: %s %s", location['name'], resp)
             next_date = resp['nextDate']
-            # do_request_first_appointment_info(location_id, next_date)
             next_first_date_locations.append({
                 'locationId': location_id,
                 'name': location['name'],
                 'nextDate': next_date,
                 'nextDateMillis': parse_date_to_milli(next_date)
             })
-        time.sleep(3)  # dunno, dude.. maybe this will keep this obnoxious WAF chill.. I'm out of ideas
+        time.sleep(THROTTLE_INTERVAL_SEC)
 
     logging.info("found %s first appointments", len(next_first_date_locations))
     next_first_date_locations.sort(key=lambda x: x['nextDateMillis'])
@@ -203,7 +204,7 @@ def fetch_locations_with_both_appointments(locations):
                          }
             logging.info("found location with both available: %s %s", next['name'], available)
             next_second_locations.append(available)
-        time.sleep(3)  # dunno, dude.. maybe this will keep this obnoxious WAF chill.. I'm out of ideas
+        time.sleep(THROTTLE_INTERVAL_SEC)
 
     logging.info("found %s locations with both appointments", len(next_second_locations))
     return next_second_locations
