@@ -23,7 +23,7 @@ function App() {
         fetchData();
         const interval = setInterval(() => {
             fetchData()
-        }, 30 * 1000) // todo currently 30 sec poll, switch to SSE
+        }, 20 * 1000) // todo currently 20 sec poll, switch to SSE
         return () => clearInterval(interval)
     }, []);
     /*
