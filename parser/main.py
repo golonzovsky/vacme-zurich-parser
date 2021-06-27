@@ -98,6 +98,7 @@ def ensure_token():
         return
 
     account_resp = requests.get('https://zh.vacme.ch/auth/realms/vacme/account', headers=headers)
+    time.sleep(THROTTLE_INTERVAL_SEC)
     if account_resp.status_code == 401:
         do_refresh_token()
 
@@ -142,6 +143,7 @@ def do_refresh_token():
     logging.info("update access token successful, expires in %s; refresh expires in %s",
                  resp_json['expires_in'], resp_json['refresh_expires_in'])
     update_token_secret(new_refresh_token)
+    time.sleep(THROTTLE_INTERVAL_SEC)
 
 
 def update_token_secret(new_token):
