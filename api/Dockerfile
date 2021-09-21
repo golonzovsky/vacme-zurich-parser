@@ -1,4 +1,4 @@
-FROM golang AS builder
+FROM golang:1.17.1 AS builder
 
 ENV GO111MODULE=on
 WORKDIR /app

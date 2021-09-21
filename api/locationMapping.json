@@ -14,6 +14,7 @@
     {"name": "_Impfzentrum Dietikon", "latitude": 47.407159156971176, "longitude":  8.387007400536746, "link": "https://goo.gl/maps/86MuJYMweQdbBUcZA"},
     {"name": "Männedorf, Apotheke Drogerie Leue", "latitude": 47.25306639641497,"longitude":  8.696799830656497, "link": "https://goo.gl/maps/YUTf1bgSF6ZasTvB9"},
     {"name": "_Impfzentrum Bülach", "latitude": 47.51575581724411,"longitude":  8.537399436203753, "link": "https://goo.gl/maps/CTJcnX6MpQcDDKA49"},
+    {"name": "_ImpfzentrumBuelach", "latitude": 47.51575581724411,"longitude":  8.537399436203753, "link": "https://goo.gl/maps/CTJcnX6MpQcDDKA49"},
     {"name": "Zürich, Coop Vitality Wiedikon", "latitude": 47.37081031140111,"longitude":  8.51626667539599, "link": "https://goo.gl/maps/Lv6Soy4tFB1pk5v78"},
     {"name": "Zürich, Benu Carmen Apotheke", "latitude": 47.368117543556224, "longitude":  8.560145848408167, "link": "https://goo.gl/maps/QgBFJXTQGy42pM1w6"},
     {"name": "Zürich, Sternen Apotheke z'Örlike", "latitude": 47.40980093341721,"longitude":  8.547130728811506, "link": "https://g.page/sternen-apo"},
@@ -170,5 +171,7 @@
     {"name":"Zürich, Amavita Apotheke Stadelhofen","latitude":47.366583,"longitude":8.548437999999999,"link":"https://maps.google.com/?cid=7177724024262054446"},
     {"name":"_Rike-Apotheke AG","latitude":47.4288924,"longitude":8.6870123,"link":"https://maps.google.com/?cid=4611472667045238451"},
     {"name":"Rike-Apotheke AG","latitude":47.4288924,"longitude":8.6870123,"link":"https://maps.google.com/?cid=4611472667045238451"},
-    {"name":"Pfäffikon, Medbase Apotheke Pfäffikon","latitude":47.3678925,"longitude":8.781928299999999,"link":"https://maps.google.com/?cid=5262978115522942543"}
+    {"name":"Pfäffikon, Medbase Apotheke Pfäffikon","latitude":47.3678925,"longitude":8.781928299999999,"link":"https://maps.google.com/?cid=5262978115522942543"},
+    {"name":"Zollikon, Apotheke Zollikon","latitude":47.341018,"longitude":8.577534,"link":"https://maps.google.com/?cid=11233313472359908679"},
+    {"name":"Dietikon, Amavita Apotheke Dietikon","latitude":47.40557310000001,"longitude":8.3982872,"link":"https://maps.google.com/?cid=9001173817633440993"}
 ]
