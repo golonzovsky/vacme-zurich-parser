@@ -173,5 +173,6 @@
     {"name":"Rike-Apotheke AG","latitude":47.4288924,"longitude":8.6870123,"link":"https://maps.google.com/?cid=4611472667045238451"},
     {"name":"Pfäffikon, Medbase Apotheke Pfäffikon","latitude":47.3678925,"longitude":8.781928299999999,"link":"https://maps.google.com/?cid=5262978115522942543"},
     {"name":"Zollikon, Apotheke Zollikon","latitude":47.341018,"longitude":8.577534,"link":"https://maps.google.com/?cid=11233313472359908679"},
-    {"name":"Dietikon, Amavita Apotheke Dietikon","latitude":47.40557310000001,"longitude":8.3982872,"link":"https://maps.google.com/?cid=9001173817633440993"}
+    {"name":"Dietikon, Amavita Apotheke Dietikon","latitude":47.40557310000001,"longitude":8.3982872,"link":"https://maps.google.com/?cid=9001173817633440993"},
+    {"name":"Zürich, Amavita Apotheke Schwamendingen","latitude":47.4045013,"longitude":8.572910799999999,"link":"https://maps.google.com/?cid=3256547052023150357"}
 ]

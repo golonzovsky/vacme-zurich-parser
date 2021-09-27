@@ -14,12 +14,13 @@ spec:
         app: vacme-parser
     spec:
       serviceAccountName: vacme-parser
+      terminationGracePeriodSeconds: 5
       containers:
         - name: vacme-parser
           image: golonzovsky/vacme-parser:latest
           env:
             - name: REFRESH_INTERVAL_SEC
-              value: '180'
+              value: '120'
             - name: REGISTRATION_ID
               valueFrom:
                 secretKeyRef:
