@@ -20,6 +20,7 @@
     {"name": "Zürich, Sternen Apotheke z'Örlike", "latitude": 47.40980093341721,"longitude":  8.547130728811506, "link": "https://g.page/sternen-apo"},
     {"name": "Wädenswil, Pill Apotheke Oberdorf", "latitude": 47.228601164531575 ,"longitude":  8.66912182880848, "link": "https://goo.gl/maps/k6c44PiFzUHxxWJM8"},
     {"name": "_Referenz-Impfzentrum Zürich", "latitude": 47.376231613652344,"longitude":  8.54538742567631, "link": "https://goo.gl/maps/M6KGZvtFbSpRcfft7"},
+    {"name": "_Janssen Impfstoff (Johnson&Johnson), Referenz-Impfzentrum Zürich", "latitude": 47.376231613652344,"longitude":  8.54538742567631, "link": "https://goo.gl/maps/M6KGZvtFbSpRcfft7"},
     {"name": "Zürich, Apotheke Schafroth", "latitude": 47.388062452841446,"longitude":  8.487042786481945, "link": "https://goo.gl/maps/xJWhi5gcTPtYQm7u5"},
     {"name": "Zürich, Neumarkt Apotheke", "latitude": 47.388501789195466,"longitude":  8.487477587042479, "link": "https://goo.gl/maps/gyeWFgCJh5Qhg1k89"},
     {"name": "Zürich, Paracelsus Apotheke Forsan AG", "latitude": 47.37951684258761,"longitude":  8.527934275396076, "link": "https://goo.gl/maps/hWjTTdu6MKtbp6eh9"},
@@ -174,5 +175,6 @@
     {"name":"Pfäffikon, Medbase Apotheke Pfäffikon","latitude":47.3678925,"longitude":8.781928299999999,"link":"https://maps.google.com/?cid=5262978115522942543"},
     {"name":"Zollikon, Apotheke Zollikon","latitude":47.341018,"longitude":8.577534,"link":"https://maps.google.com/?cid=11233313472359908679"},
     {"name":"Dietikon, Amavita Apotheke Dietikon","latitude":47.40557310000001,"longitude":8.3982872,"link":"https://maps.google.com/?cid=9001173817633440993"},
-    {"name":"Zürich, Amavita Apotheke Schwamendingen","latitude":47.4045013,"longitude":8.572910799999999,"link":"https://maps.google.com/?cid=3256547052023150357"}
+    {"name":"Zürich, Amavita Apotheke Schwamendingen","latitude":47.4045013,"longitude":8.572910799999999,"link":"https://maps.google.com/?cid=3256547052023150357"},
+    {"name":"Apotheke Center Dielsdorf","latitude":47.484276,"longitude":8.465701,"link":"https://maps.google.com/?cid=15221914659155853663"}
 ]
