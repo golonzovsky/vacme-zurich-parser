@@ -8,6 +8,7 @@
     {"name": "Dübendorf, TopPharm Waldmann Apotheke", "latitude": 47.399305960903966, "longitude":  8.621705931219541, "link": "https://goo.gl/maps/oCD7QzPbS4ujNkJb8"},
     {"name": "Affoltern a.A., Vitalis Apotheke", "latitude": 47.2745075198469, "longitude":  8.446807888327584, "link": "https://g.page/vitalisapotheke"},
     {"name": "_Impfzentrum Uster", "latitude": 47.360851559068145, "longitude":  8.728580911621616, "link": "https://g.page/impfzentrum-uster"},
+    {"name": "_Janssen Impfstoff (Johnson&Johnson), Impfzentrum Uster", "latitude": 47.360851559068145, "longitude":  8.728580911621616, "link": "https://g.page/impfzentrum-uster"},
     {"name": "Thalwil, Coop Vitality Thalwil", "latitude": 47.29708628094759, "longitude":  8.562413369291244, "link": "https://goo.gl/maps/NDYwd4bLrrMdBUoVA"},
     {"name": "Zürich, Amavita Apotheke Schamendingen", "latitude": 47.404616624050036,"longitude":  8.57303371587817, "link": "https://g.page/amavita-schwamendingen"},
     {"name": "Zürich, Olympia Apotheke", "latitude": 47.37380123337674,"longitude":  8.531016144713028, "link": "https://g.page/olympia-apotheke-zh"},
@@ -39,6 +40,7 @@
     {"name": "_Impfzentrum Messe Zürich", "latitude": 47.41165664956518, "longitude":  8.553435671701461, "link": "https://g.page/impfzentrum-zuerich"},
     {"name": "_Impfzentrum Meilen", "latitude": 47.26914130142422, "longitude":  8.642818633065, "link": "https://goo.gl/maps/8hgWyQqDc8nkJ8ZT7"},
     {"name": "_Impfzentrum Winterthur", "latitude": 47.48810612836621,"longitude":  8.705645834916306, "link": "https://g.page/Impfzentrumwinterthur"},
+    {"name": "_Janssen Impfstoff (Johnson&Johnson), Impfzentrum Winterthur", "latitude": 47.48810612836621,"longitude":  8.705645834916306, "link": "https://g.page/Impfzentrumwinterthur"},
     {"name": "Zürich, Apotheke Schaffhauserplatz", "latitude": 47.39185615394899, "longitude":  8.538639792585437, "link": "https://goo.gl/maps/4DbKxkdyEbZkchWU8"},
     {"name": "Zürich, Amavita Apotheke Zürich Altstetten", "latitude": 47.391463565019215,"longitude":  8.489835888329619, "link": "https://g.page/amavita-altstetten"},
     {"name": "Zürich, Amavita Apotheke Bahnhofplatz", "latitude": 47.37674027418106, "longitude":  8.540103756629621, "link": "https://g.page/amavita-bahnhofplatz-zurich"},
@@ -177,5 +179,6 @@
     {"name":"Zollikon, Apotheke Zollikon","latitude":47.341018,"longitude":8.577534,"link":"https://maps.google.com/?cid=11233313472359908679"},
     {"name":"Dietikon, Amavita Apotheke Dietikon","latitude":47.40557310000001,"longitude":8.3982872,"link":"https://maps.google.com/?cid=9001173817633440993"},
     {"name":"Zürich, Amavita Apotheke Schwamendingen","latitude":47.4045013,"longitude":8.572910799999999,"link":"https://maps.google.com/?cid=3256547052023150357"},
-    {"name":"Apotheke Center Dielsdorf","latitude":47.484276,"longitude":8.465701,"link":"https://maps.google.com/?cid=15221914659155853663"}
+    {"name":"Apotheke Center Dielsdorf","latitude":47.484276,"longitude":8.465701,"link":"https://maps.google.com/?cid=15221914659155853663"},
+    {"name":"Odeon Apotheke","latitude":47.3677398,"longitude":8.5453048,"link":"https://maps.google.com/?cid=3893503349667138009"}
 ]
