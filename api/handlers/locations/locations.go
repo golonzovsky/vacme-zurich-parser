@@ -22,12 +22,12 @@ type RespCache struct {
 	data *fullLocationResp
 }
 
-func (resp *fullLocationResp) timeTillNextRefresh() time.Duration {
+func (resp fullLocationResp) timeTillNextRefresh() time.Duration {
 	nextRefreshTime := time.Unix(resp.LastRefresh/1000, resp.LastRefresh%1000).Add(time.Second * time.Duration(resp.RefreshIntervalSec))
 	return nextRefreshTime.Sub(time.Now())
 }
 
-func (resp *fullLocationResp) isValid() bool {
+func (resp fullLocationResp) isValid() bool {
 	if resp.LastRefresh == 0 {
 		log.Debugf("initial cache warmup")
 		return false
@@ -45,11 +45,11 @@ func (resp *fullLocationResp) isValid() bool {
 	return resp.timeTillNextRefresh() > 0
 }
 
-func (resp *fullLocationResp) initialized() bool {
+func (resp fullLocationResp) initialized() bool {
 	return resp.LastRefresh != 0
 }
 
-func Locations(c *gin.Context) {
+func Handler(c *gin.Context) {
 	locations, err := getLocations()
 	if err != nil {
 		log.Warn(err)

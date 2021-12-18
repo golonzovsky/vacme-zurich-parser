@@ -95,5 +95,4 @@ func init() {
 	if err != nil {
 		log.Fatalf("cannot initialize google maps client, check access token or disable lookups: %s", err)
 	}
-
 }

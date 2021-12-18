@@ -212,5 +212,10 @@
     {"name":"docstation Stettbach ZH","latitude":47.39687259999999,"longitude":8.5969922,"link":"https://maps.google.com/?cid=7683770270083294095"},
     {"name":"Zürich, Toppharm Apotheke Höschgasse, Pfizer Impfstoff","latitude":47.3577172,"longitude":8.5547541,"link":"https://maps.google.com/?cid=17144883931329478304"},
     {"name":"Uster, Coop Vitality Apotheke Uster, Pfizer Impfstoff","latitude":47.3502142,"longitude":8.7167037,"link":"https://maps.google.com/?cid=3949747678164971005"},
-    {"name":"Gesundheitszentrum Hottingen","latitude":47.368696983739845,"longitude":8.557888792055829,"link":"https://goo.gl/maps/VLgnutTYZ9zxYdo7A"}
+    {"name":"Gesundheitszentrum Hottingen","latitude":47.368696983739845,"longitude":8.557888792055829,"link":"https://goo.gl/maps/VLgnutTYZ9zxYdo7A"},
+    {"name":"_Popup-Impfzentrum Dietikon","latitude":47.3761211,"longitude":8.5453238,"link":"https://maps.google.com/?cid=1859045064808007017"},
+    {"name":"_Booster-Impfzentrum Meilen","latitude":47.4122943,"longitude":8.542387999999999,"link":"https://maps.google.com/?cid=1831406609115776450"},
+    {"name":"Zürich, Medbase Apotheke Zürich Enge, Pfizer Impfstoff","latitude":47.364541,"longitude":8.531245,"link":"https://maps.google.com/?cid=15767317377409601353"},
+    {"name":"Zürich, Bärenapotheke AG","latitude":47.37056390000001,"longitude":8.514382699999999,"link":"https://maps.google.com/?cid=10137591580911058490"},
+    {"name":"Zürich, TopPharm Europaallee Apotheke, Moderna Impfstoff","latitude":47.37817080000001,"longitude":8.5345344,"link":"https://maps.google.com/?cid=1905597125383106974"}
 ]
