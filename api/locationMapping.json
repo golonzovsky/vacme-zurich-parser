@@ -217,5 +217,10 @@
     {"name":"_Booster-Impfzentrum Meilen","latitude":47.4122943,"longitude":8.542387999999999,"link":"https://maps.google.com/?cid=1831406609115776450"},
     {"name":"Zürich, Medbase Apotheke Zürich Enge, Pfizer Impfstoff","latitude":47.364541,"longitude":8.531245,"link":"https://maps.google.com/?cid=15767317377409601353"},
     {"name":"Zürich, Bärenapotheke AG","latitude":47.37056390000001,"longitude":8.514382699999999,"link":"https://maps.google.com/?cid=10137591580911058490"},
-    {"name":"Zürich, TopPharm Europaallee Apotheke, Moderna Impfstoff","latitude":47.37817080000001,"longitude":8.5345344,"link":"https://maps.google.com/?cid=1905597125383106974"}
+    {"name":"Zürich, TopPharm Europaallee Apotheke, Moderna Impfstoff","latitude":47.37817080000001,"longitude":8.5345344,"link":"https://maps.google.com/?cid=1905597125383106974"},
+    {"name":"Gesundheitszentrum Hottingen, Moderna Impfstoff","latitude":47.3681738,"longitude":8.557631299999999,"link":"https://maps.google.com/?cid=17172974731492510044"},
+    {"name":"Zürich, DROPA Apotheke Drogerie Zürich-Affoltern","latitude":47.4202047,"longitude":8.5081692,"link":"https://maps.google.com/?cid=3716101821203628445"},
+    {"name":"Wetzikon, Apotheke Kempten, Pfizer Impfstoff","latitude":47.33165890000001,"longitude":8.8079271,"link":"https://maps.google.com/?cid=16140833328031341337"},
+    {"name":"_Drive-In-Impfzentrum Dübendorf","latitude":47.3962406,"longitude":8.6343667,"link":"https://maps.google.com/?cid=62318599604839519"},
+    {"name":"Gesundheitszentrum Hottingen, Pfizer Impfstoff","latitude":47.3681738,"longitude":8.557631299999999,"link":"https://maps.google.com/?cid=17172974731492510044"}
 ]
