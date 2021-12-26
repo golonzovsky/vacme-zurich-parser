@@ -15,9 +15,10 @@ import (
 )
 
 type Fetcher struct {
-	apiBase    string
-	cache      RespCache
-	httpClient http.Client
+	apiBase     string
+	cache       RespCache
+	httpClient  http.Client
+	placeClient *PlaceClient
 }
 
 type RespCache struct {
@@ -30,6 +31,7 @@ func NewFetcher() *Fetcher {
 		os.Getenv("PARSER_API_BASE"), //todo extract to config viper
 		RespCache{data: &fullLocationsResp{LocationResponseMetadata: &LocationResponseMetadata{}}},
 		http.Client{Timeout: 3 * time.Second},
+		NewPlaceClient(),
 	}
 }
 
@@ -121,7 +123,7 @@ func (f *Fetcher) fetchLocationData(ctx context.Context) (*fullLocationsResp, er
 
 	var enhancedLocations = make([]location, 0)
 	for _, loc := range dropDownLocations {
-		geoInfo, _ := geoByName(loc.Name)
+		geoInfo, _ := f.placeClient.geoByName(loc.Name)
 		activeLoc, _ := activeLocationByName[loc.Name]
 		enhancedLocations = append(enhancedLocations, location{
 			Id:             loc.Id,

@@ -10,12 +10,36 @@ import (
 	"os"
 )
 
-var placeApiKey = os.Getenv("PLACE_API_KEY") //todo map from configmap or/and configurable viper
-var mappingLocation = os.Getenv("MAPPING_LOCATION")
+type PlaceClient struct {
+	geoMapping      map[string]geoLocation
+	geoLookupFailed map[string]bool
+	geoClient       *maps.Client
+}
 
-var geoMapping = make(map[string]geoLocation)
-var geoLookupFailed = make(map[string]bool)
-var geoClient *maps.Client
+func NewPlaceClient() *PlaceClient {
+	var geoLocations []geoLocation
+	plan, _ := ioutil.ReadFile(os.Getenv("MAPPING_LOCATION")) //todo map from configmap or/and configurable viper
+	err := json.Unmarshal(plan, &geoLocations)
+	if err != nil {
+		log.Fatal("Location mapping seed read failure", err)
+	}
+
+	geoMapping := make(map[string]geoLocation)
+	for _, location := range geoLocations {
+		geoMapping[location.Name] = location
+	}
+
+	geoClient, err := maps.NewClient(maps.WithAPIKey(os.Getenv("PLACE_API_KEY"))) //todo map from configmap or/and configurable viper
+	if err != nil {
+		log.Fatalf("cannot initialize google maps client, check access token or disable lookups: %s", err)
+	}
+
+	return &PlaceClient{
+		geoMapping,
+		make(map[string]bool),
+		geoClient,
+	}
+}
 
 type geoLocation struct {
 	Name      string  `json:"name"`
@@ -24,31 +48,31 @@ type geoLocation struct {
 	Link      string  `json:"link,omitempty"`
 }
 
-func geoByName(name string) (*geoLocation, error) {
-	if geoData, ok := geoMapping[name]; ok { //todo locking?
+func (s *PlaceClient) geoByName(name string) (*geoLocation, error) {
+	if geoData, ok := s.geoMapping[name]; ok { //todo locking?
 		return &geoData, nil
 	}
 
-	if geoLookupFailed[name] {
+	if s.geoLookupFailed[name] {
 		log.Debugf("geo lookup failed and will not be repeated for %s", name)
 		return nil, nil
 	}
 
 	log.Warnf("missing location in GEO mapping '%s', doing lookup", name)
-	geoData, err := doGeoLookup(name)
+	geoData, err := s.doGeoLookup(name)
 	if err != nil || geoData == nil {
-		geoLookupFailed[name] = true
+		s.geoLookupFailed[name] = true
 		log.Warnf("Geo lookup failed for '%s'. Will not do it again until restart: %v", name, err)
 		return nil, err
 	}
-	geoMapping[name] = *geoData
+	s.geoMapping[name] = *geoData
 	geoJson, _ := json.Marshal(geoData)
 	log.Infof("Geo lookup successful for '%s'. Caching in memory. Please add to seed mapping: %s ", name, geoJson)
 	return geoData, nil
 }
 
-func doGeoLookup(name string) (*geoLocation, error) {
-	searchRes, searchErr := geoClient.FindPlaceFromText(context.Background(), &maps.FindPlaceFromTextRequest{
+func (s *PlaceClient) doGeoLookup(name string) (*geoLocation, error) {
+	searchRes, searchErr := s.geoClient.FindPlaceFromText(context.Background(), &maps.FindPlaceFromTextRequest{
 		Input:     name,
 		InputType: maps.FindPlaceFromTextInputTypeTextQuery,
 		Fields:    []maps.PlaceSearchFieldMask{maps.PlaceSearchFieldMaskGeometryLocation, maps.PlaceSearchFieldMaskPlaceID, maps.PlaceSearchFieldMaskName},
@@ -58,11 +82,11 @@ func doGeoLookup(name string) (*geoLocation, error) {
 		return nil, fmt.Errorf("failed geo search lookup for '%s': %v", name, searchErr)
 	}
 	if len(searchRes.Candidates) != 1 {
-		return nil, fmt.Errorf("unresolved ambuguity in geo search lookup result for '%s': %v", name, toPlaceNames(searchRes))
+		return nil, fmt.Errorf("unresolved ambuguity in geo search lookup result for '%s': %v", name, s.toPlaceNames(searchRes))
 	}
 	searchResult := searchRes.Candidates[0]
 
-	placeDetailsRes, detailsErr := geoClient.PlaceDetails(context.Background(), &maps.PlaceDetailsRequest{
+	placeDetailsRes, detailsErr := s.geoClient.PlaceDetails(context.Background(), &maps.PlaceDetailsRequest{
 		PlaceID: searchResult.PlaceID,
 		Fields:  []maps.PlaceDetailsFieldMask{maps.PlaceDetailsFieldMaskURL},
 	})
@@ -79,28 +103,10 @@ func doGeoLookup(name string) (*geoLocation, error) {
 	}, nil
 }
 
-func toPlaceNames(searchRes maps.FindPlaceFromTextResponse) []string {
+func (s *PlaceClient) toPlaceNames(searchRes maps.FindPlaceFromTextResponse) []string {
 	var candidateNames []string
 	for _, c := range searchRes.Candidates {
 		candidateNames = append(candidateNames, c.Name)
 	}
 	return candidateNames
-}
-
-func init() { // todo remove init of non-static field
-	var geoLocations []geoLocation
-	plan, _ := ioutil.ReadFile(mappingLocation)
-	err := json.Unmarshal(plan, &geoLocations)
-	if err != nil {
-		log.Fatal("Location mapping seed read failure", err)
-	}
-
-	for _, location := range geoLocations {
-		geoMapping[location.Name] = location
-	}
-
-	geoClient, err = maps.NewClient(maps.WithAPIKey(placeApiKey))
-	if err != nil {
-		log.Fatalf("cannot initialize google maps client, check access token or disable lookups: %s", err)
-	}
 }
