@@ -46,7 +46,7 @@ func (resp fullLocationsResp) timeTillNextRefresh() time.Duration {
 
 func (resp fullLocationsResp) isValid() bool {
 	if resp.LastRefresh == 0 {
-		log.Debugf("initial cache warmup")
+		log.Debugf("initial cache warmup") // todo why are you there??
 		return false
 	}
 
@@ -54,7 +54,7 @@ func (resp fullLocationsResp) isValid() bool {
 	refreshIsInFuture := tillNextRefresh > 0
 	if refreshIsInFuture {
 		log.Debugf("time till next refresh %s", tillNextRefresh)
-		prometheus.DataStaleForMs.Set(0)
+		prometheus.DataStaleForMs.Set(0) // todo why are you there??
 	} else {
 		log.Debugf("data is stale for %s, refreshing", -tillNextRefresh)
 		prometheus.DataStaleForMs.Set(-tillNextRefresh.Seconds())
@@ -127,13 +127,13 @@ func (f *Fetcher) fetchLocationData(ctx context.Context) (*fullLocationsResp, er
 
 	var enhancedLocations = make([]location, 0)
 	for _, loc := range dropDownLocations {
-		geoInfo, _ := f.placeClient.geoByName(loc.Name)
+		geoInfo, _ := f.placeClient.LocationByName(loc.Name)
 		activeLoc, _ := activeLocationByName[loc.Name]
 		enhancedLocations = append(enhancedLocations, location{
 			Id:             loc.Id,
 			Name:           loc.Name,
 			NoFreeSlot:     loc.NoFreeSlot,
-			geoLocation:    geoInfo,
+			GeoLocation:    geoInfo,
 			activeLocation: &activeLoc,
 		})
 	}
@@ -219,7 +219,7 @@ type location struct {
 	Id         string `json:"id"`
 	NoFreeSlot bool   `json:"noFreieTermine"`
 	*activeLocation
-	*geoLocation
+	*GeoLocation
 }
 
 type LocationResponseMetadata struct {

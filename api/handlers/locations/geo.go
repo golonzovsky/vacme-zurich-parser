@@ -10,13 +10,20 @@ import (
 )
 
 type PlaceClient struct {
-	geoMapping      map[string]geoLocation
+	geoMapping      map[string]GeoLocation
 	geoLookupFailed map[string]bool
 	geoClient       *maps.Client
 }
 
+type GeoLocation struct {
+	Name      string  `json:"name"`
+	Latitude  float64 `json:"latitude,omitempty"`
+	Longitude float64 `json:"longitude,omitempty"`
+	Link      string  `json:"link,omitempty"`
+}
+
 func NewPlaceClient(placeApiKey string, seedMappingLocation string) *PlaceClient {
-	var geoLocations []geoLocation
+	var geoLocations []GeoLocation
 	plan, _ := ioutil.ReadFile(seedMappingLocation)
 	err := json.Unmarshal(plan, &geoLocations)
 	if err != nil {
@@ -28,7 +35,7 @@ func NewPlaceClient(placeApiKey string, seedMappingLocation string) *PlaceClient
 		log.Fatalf("cannot initialize google maps client, check access token or disable lookups: %s", err)
 	}
 
-	geoMapping := make(map[string]geoLocation)
+	geoMapping := make(map[string]GeoLocation)
 	for _, location := range geoLocations {
 		geoMapping[location.Name] = location
 	}
@@ -40,14 +47,7 @@ func NewPlaceClient(placeApiKey string, seedMappingLocation string) *PlaceClient
 	}
 }
 
-type geoLocation struct {
-	Name      string  `json:"name"`
-	Latitude  float64 `json:"latitude,omitempty"`
-	Longitude float64 `json:"longitude,omitempty"`
-	Link      string  `json:"link,omitempty"`
-}
-
-func (s *PlaceClient) geoByName(name string) (*geoLocation, error) {
+func (s *PlaceClient) LocationByName(name string) (*GeoLocation, error) {
 	if geoData, ok := s.geoMapping[name]; ok { //todo locking?
 		return &geoData, nil
 	}
@@ -70,7 +70,7 @@ func (s *PlaceClient) geoByName(name string) (*geoLocation, error) {
 	return geoData, nil
 }
 
-func (s *PlaceClient) doGeoLookup(name string) (*geoLocation, error) {
+func (s *PlaceClient) doGeoLookup(name string) (*GeoLocation, error) {
 	searchRes, searchErr := s.geoClient.FindPlaceFromText(context.Background(), &maps.FindPlaceFromTextRequest{
 		Input:     name,
 		InputType: maps.FindPlaceFromTextInputTypeTextQuery,
@@ -94,7 +94,7 @@ func (s *PlaceClient) doGeoLookup(name string) (*geoLocation, error) {
 		return nil, detailsErr
 	}
 
-	return &geoLocation{
+	return &GeoLocation{
 		Name:      name,
 		Latitude:  searchResult.Geometry.Location.Lat,
 		Longitude: searchResult.Geometry.Location.Lng,
