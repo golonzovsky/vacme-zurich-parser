@@ -1,6 +1,7 @@
 package locations
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -16,6 +17,9 @@ import (
 var apiBase = os.Getenv("PARSER_API_BASE") //todo extract to config viper
 
 var respCache = RespCache{data: &fullLocationResp{LocationResponseMetadata: &LocationResponseMetadata{}}}
+var httpClient = &http.Client{Timeout: 3 * time.Second}
+
+// todo move state to struct
 
 type RespCache struct {
 	mu   sync.Mutex
@@ -50,7 +54,7 @@ func (resp fullLocationResp) initialized() bool {
 }
 
 func Handler(c *gin.Context) {
-	locations, err := getLocations()
+	locations, err := getLocations(c)
 	if err != nil {
 		log.Warn(err)
 	}
@@ -62,7 +66,7 @@ func Handler(c *gin.Context) {
 	}
 }
 
-func getLocations() (*fullLocationResp, error) {
+func getLocations(ctx context.Context) (*fullLocationResp, error) {
 	respCache.mu.Lock() //todo this is naive locking. improve
 	defer respCache.mu.Unlock()
 	defer updatePrometheus()
@@ -71,7 +75,7 @@ func getLocations() (*fullLocationResp, error) {
 		return respCache.data, nil
 	}
 
-	resp, err := fetchLocationData()
+	resp, err := fetchLocationData(ctx)
 	if err == nil {
 		respCache.data = resp
 		return respCache.data, nil
@@ -97,13 +101,13 @@ func updatePrometheus() {
 	prometheus.LocationsActiveCount.Set(float64(activeLocations))
 }
 
-func fetchLocationData() (*fullLocationResp, error) {
-	var dropDownLocations, dropDownLocationsErr = fetchDropDownLocations()
+func fetchLocationData(ctx context.Context) (*fullLocationResp, error) {
+	var dropDownLocations, dropDownLocationsErr = fetchDropDownLocations(ctx)
 	if dropDownLocationsErr != nil {
 		return nil, dropDownLocationsErr
 	}
 
-	metadata, activeLocationByName, activeLocationErr := fetchActiveLocationsMapping()
+	metadata, activeLocationByName, activeLocationErr := fetchActiveLocationsMapping(ctx)
 	if activeLocationErr != nil {
 		return nil, activeLocationErr
 	}
@@ -129,8 +133,8 @@ func fetchLocationData() (*fullLocationResp, error) {
 	return &resp, nil
 }
 
-func fetchActiveLocationsMapping() (*LocationResponseMetadata, map[string]activeLocation, error) {
-	var activeLocationResp, activeLocationErr = fetchActiveLocations()
+func fetchActiveLocationsMapping(ctx context.Context) (*LocationResponseMetadata, map[string]activeLocation, error) {
+	var activeLocationResp, activeLocationErr = fetchActiveLocations(ctx)
 	if activeLocationErr != nil {
 		return nil, nil, activeLocationErr
 	}
@@ -143,8 +147,13 @@ func fetchActiveLocationsMapping() (*LocationResponseMetadata, map[string]active
 	return activeLocationResp.LocationResponseMetadata, activeMapping, nil
 }
 
-func fetchDropDownLocations() ([]location, error) {
-	httpResp, err := http.Get(apiBase + "/api/locations")
+func fetchDropDownLocations(ctx context.Context) ([]location, error) {
+	req, err := http.NewRequest(http.MethodGet, apiBase+"/api/locations", nil)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	httpResp, err := httpClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -162,8 +171,13 @@ func fetchDropDownLocations() ([]location, error) {
 	return locations, nil
 }
 
-func fetchActiveLocations() (*activeLocationResponse, error) {
-	httpResp, err := http.Get(apiBase + "/api/")
+func fetchActiveLocations(ctx context.Context) (*activeLocationResponse, error) {
+	req, err := http.NewRequest(http.MethodGet, apiBase+"/api/", nil)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	httpResp, err := httpClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
