@@ -4,10 +4,12 @@ import (
 	"context"
 	"errors"
 	"github.com/gin-gonic/gin"
-	"github.com/golonzovsky/vacme/handlers"
 	"github.com/golonzovsky/vacme/handlers/locations"
+	dumpReq "github.com/golonzovsky/vacme/handlers/log"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
 	"net/http"
+	"os"
 	"os/signal"
 	"syscall"
 	"time"
@@ -22,11 +24,32 @@ func (s *server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 }
 
 func (s *server) registerRoutes() {
-	s.router.GET("/health", handlers.Ok)
-	s.router.GET("/metrics", handlers.PrometheusMetrics())
-	//v2 := r.Group("/api/v2")
-	s.router.POST("/api/v2/log", handlers.Log) //todo rename to twillio callback and check hmac(sha1)
-	s.router.GET("/api/v2/locations", locations.NewFetcher().Handler)
+	s.router.GET("/health", s.handleHealthOk())
+	s.router.GET("/metrics", s.handlePrometheus())
+	//v2 := s.router.Group("/api/v2")
+	s.router.POST("/api/v2/log", dumpReq.Log) //todo rename to twillio callback and check hmac(sha1)
+	s.router.GET("/api/v2/locations", s.handleLocations())
+}
+
+func (s *server) handleHealthOk() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Status(200)
+	}
+}
+
+func (s *server) handlePrometheus() gin.HandlerFunc {
+	h := promhttp.Handler()
+	return func(c *gin.Context) {
+		h.ServeHTTP(c.Writer, c.Request)
+	}
+}
+
+func (s *server) handleLocations() gin.HandlerFunc {
+	parserApiBase := os.Getenv("PARSER_API_BASE") //todo extract to config viper, or move up to server
+	placeApiKey := os.Getenv("PLACE_API_KEY")
+	seedPlaceMappingLocation := os.Getenv("MAPPING_LOCATION")
+	locationsFetcher := locations.NewFetcher(parserApiBase, placeApiKey, seedPlaceMappingLocation)
+	return locationsFetcher.Handler
 }
 
 func newServer() *server {

@@ -8,7 +8,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
-	"os"
 	"sync"
 	"time"
 )
@@ -25,11 +24,7 @@ type RespCache struct {
 	data *fullLocationsResp
 }
 
-func NewFetcher() *Fetcher {
-	parserApiBase := os.Getenv("PARSER_API_BASE") //todo extract to config viper
-	placeApiKey := os.Getenv("PLACE_API_KEY")
-	seedPlaceMappingLocation := os.Getenv("MAPPING_LOCATION")
-
+func NewFetcher(parserApiBase string, placeApiKey string, seedPlaceMappingLocation string) *Fetcher {
 	return &Fetcher{
 		parserApiBase,
 		RespCache{data: &fullLocationsResp{LocationResponseMetadata: &LocationResponseMetadata{}}},
