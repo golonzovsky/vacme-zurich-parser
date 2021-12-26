@@ -20,6 +20,7 @@
     {"name": "Zürich, Benu Carmen Apotheke", "latitude": 47.368117543556224, "longitude":  8.560145848408167, "link": "https://goo.gl/maps/QgBFJXTQGy42pM1w6"},
     {"name": "Zürich, Sternen Apotheke z'Örlike", "latitude": 47.40980093341721,"longitude":  8.547130728811506, "link": "https://g.page/sternen-apo"},
     {"name": "Wädenswil, Pill Apotheke Oberdorf", "latitude": 47.228601164531575 ,"longitude":  8.66912182880848, "link": "https://goo.gl/maps/k6c44PiFzUHxxWJM8"},
+    {"name": "Wädenswil, Pill Apotheke Oberdorf, Pfizer Impfstoff", "latitude": 47.228601164531575 ,"longitude":  8.66912182880848, "link": "https://goo.gl/maps/k6c44PiFzUHxxWJM8"},
     {"name": "_Referenz-Impfzentrum Zürich", "latitude": 47.376231613652344,"longitude":  8.54538742567631, "link": "https://goo.gl/maps/M6KGZvtFbSpRcfft7"},
     {"name": "_Janssen Impfstoff (Johnson&Johnson), Referenz-Impfzentrum Zürich", "latitude": 47.376231613652344,"longitude":  8.54538742567631, "link": "https://goo.gl/maps/M6KGZvtFbSpRcfft7"},
     {"name": "Zürich, Apotheke Schafroth", "latitude": 47.388062452841446,"longitude":  8.487042786481945, "link": "https://goo.gl/maps/xJWhi5gcTPtYQm7u5"},
@@ -222,5 +223,8 @@
     {"name":"Zürich, DROPA Apotheke Drogerie Zürich-Affoltern","latitude":47.4202047,"longitude":8.5081692,"link":"https://maps.google.com/?cid=3716101821203628445"},
     {"name":"Wetzikon, Apotheke Kempten, Pfizer Impfstoff","latitude":47.33165890000001,"longitude":8.8079271,"link":"https://maps.google.com/?cid=16140833328031341337"},
     {"name":"_Drive-In-Impfzentrum Dübendorf","latitude":47.3962406,"longitude":8.6343667,"link":"https://maps.google.com/?cid=62318599604839519"},
-    {"name":"Gesundheitszentrum Hottingen, Pfizer Impfstoff","latitude":47.3681738,"longitude":8.557631299999999,"link":"https://maps.google.com/?cid=17172974731492510044"}
+    {"name":"Gesundheitszentrum Hottingen, Pfizer Impfstoff","latitude":47.3681738,"longitude":8.557631299999999,"link":"https://maps.google.com/?cid=17172974731492510044"},
+    {"name":"Service Sans Soucis AG","latitude":47.38942818676795,"longitude":8.483925956487186,"link":"https://goo.gl/maps/VRc3enbejdf4H74a8"},
+    {"name":"Arztpraxis Löwenzentrum","latitude":47.404919154980064,"longitude":8.402172553723725,"link":"https://goo.gl/maps/Ub1ciZa3cAGTafgA9"},
+    {"name":"_Popup-Impfzentrum Wetzikon","latitude":47.31374444343403, "longitude":8.797245571839175,"link":"https://goo.gl/maps/xZbNcBuFyMHAr9tT7"}
 ]

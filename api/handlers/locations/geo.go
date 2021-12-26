@@ -58,7 +58,7 @@ func doGeoLookup(name string) (*geoLocation, error) {
 		return nil, fmt.Errorf("failed geo search lookup for '%s': %v", name, searchErr)
 	}
 	if len(searchRes.Candidates) != 1 {
-		return nil, fmt.Errorf("unresolved ambuguity in geo search lookup result for '%s': %v", name, searchRes.Candidates)
+		return nil, fmt.Errorf("unresolved ambuguity in geo search lookup result for '%s': %v", name, toPlaceNames(searchRes))
 	}
 	searchResult := searchRes.Candidates[0]
 
@@ -79,7 +79,15 @@ func doGeoLookup(name string) (*geoLocation, error) {
 	}, nil
 }
 
-func init() {
+func toPlaceNames(searchRes maps.FindPlaceFromTextResponse) []string {
+	var candidateNames []string
+	for _, c := range searchRes.Candidates {
+		candidateNames = append(candidateNames, c.Name)
+	}
+	return candidateNames
+}
+
+func init() { // todo remove init of non-static field
 	var geoLocations []geoLocation
 	plan, _ := ioutil.ReadFile(mappingLocation)
 	err := json.Unmarshal(plan, &geoLocations)
