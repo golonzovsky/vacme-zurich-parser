@@ -7,7 +7,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	"googlemaps.github.io/maps"
 	"io/ioutil"
-	"os"
 )
 
 type PlaceClient struct {
@@ -16,22 +15,22 @@ type PlaceClient struct {
 	geoClient       *maps.Client
 }
 
-func NewPlaceClient() *PlaceClient {
+func NewPlaceClient(placeApiKey string, seedMappingLocation string) *PlaceClient {
 	var geoLocations []geoLocation
-	plan, _ := ioutil.ReadFile(os.Getenv("MAPPING_LOCATION")) //todo map from configmap or/and configurable viper
+	plan, _ := ioutil.ReadFile(seedMappingLocation)
 	err := json.Unmarshal(plan, &geoLocations)
 	if err != nil {
 		log.Fatal("Location mapping seed read failure", err)
 	}
 
+	geoClient, err := maps.NewClient(maps.WithAPIKey(placeApiKey))
+	if err != nil {
+		log.Fatalf("cannot initialize google maps client, check access token or disable lookups: %s", err)
+	}
+
 	geoMapping := make(map[string]geoLocation)
 	for _, location := range geoLocations {
 		geoMapping[location.Name] = location
-	}
-
-	geoClient, err := maps.NewClient(maps.WithAPIKey(os.Getenv("PLACE_API_KEY"))) //todo map from configmap or/and configurable viper
-	if err != nil {
-		log.Fatalf("cannot initialize google maps client, check access token or disable lookups: %s", err)
 	}
 
 	return &PlaceClient{

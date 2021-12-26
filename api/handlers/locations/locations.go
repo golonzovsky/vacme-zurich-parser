@@ -27,11 +27,15 @@ type RespCache struct {
 }
 
 func NewFetcher() *Fetcher {
+	parserApiBase := os.Getenv("PARSER_API_BASE") //todo extract to config viper
+	placeApiKey := os.Getenv("PLACE_API_KEY")
+	seedPlaceMappingLocation := os.Getenv("MAPPING_LOCATION")
+
 	return &Fetcher{
-		os.Getenv("PARSER_API_BASE"), //todo extract to config viper
+		parserApiBase,
 		RespCache{data: &fullLocationsResp{LocationResponseMetadata: &LocationResponseMetadata{}}},
 		http.Client{Timeout: 3 * time.Second},
-		NewPlaceClient(),
+		NewPlaceClient(placeApiKey, seedPlaceMappingLocation),
 	}
 }
 
