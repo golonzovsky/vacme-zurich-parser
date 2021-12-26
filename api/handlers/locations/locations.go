@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/golonzovsky/vacme/prometheus"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
@@ -54,10 +53,10 @@ func (resp fullLocationsResp) isValid() bool {
 	refreshIsInFuture := tillNextRefresh > 0
 	if refreshIsInFuture {
 		log.Debugf("time till next refresh %s", tillNextRefresh)
-		prometheus.DataStaleForMs.Set(0) // todo why are you there??
+		DataStaleForMs.Set(0) // todo why are you there??
 	} else {
 		log.Debugf("data is stale for %s, refreshing", -tillNextRefresh)
-		prometheus.DataStaleForMs.Set(-tillNextRefresh.Seconds())
+		DataStaleForMs.Set(-tillNextRefresh.Seconds())
 	}
 	return resp.timeTillNextRefresh() > 0
 }
@@ -103,7 +102,7 @@ func (f *Fetcher) getLocations(ctx context.Context) (*fullLocationsResp, error) 
 }
 
 func (f *Fetcher) updatePrometheus() {
-	prometheus.LocationsTotalCount.Set(float64(len(f.cache.data.Locations)))
+	TotalCount.Set(float64(len(f.cache.data.Locations)))
 
 	var activeLocations int
 	for _, loc := range f.cache.data.Locations {
@@ -111,7 +110,7 @@ func (f *Fetcher) updatePrometheus() {
 			activeLocations++
 		}
 	}
-	prometheus.LocationsActiveCount.Set(float64(activeLocations))
+	ActiveCount.Set(float64(activeLocations))
 }
 
 func (f *Fetcher) fetchLocationData(ctx context.Context) (*fullLocationsResp, error) {
@@ -142,7 +141,7 @@ func (f *Fetcher) fetchLocationData(ctx context.Context) (*fullLocationsResp, er
 		LocationResponseMetadata: metadata,
 		Locations:                enhancedLocations,
 	}
-	prometheus.LastSuccessfulFetchTime.SetToCurrentTime()
+	LastSuccessfulFetchTime.SetToCurrentTime()
 	return &resp, nil
 }
 

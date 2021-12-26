@@ -76,10 +76,7 @@ func registerGracefulShutdown(ctx context.Context, stop context.CancelFunc, srv 
 }
 
 func initLogger() {
-	log.SetFormatter(&log.TextFormatter{
-		FullTimestamp: true,
-		ForceColors:   true,
-	})
+	log.SetFormatter(&log.TextFormatter{FullTimestamp: true, ForceColors: true})
 	log.SetLevel(log.DebugLevel)
 	gin.ForceConsoleColor()
 }

@@ -1,12 +1,12 @@
-package prometheus
+package locations
 
 import "github.com/prometheus/client_golang/prometheus"
 
-var LocationsTotalCount = prometheus.NewGauge(prometheus.GaugeOpts{
+var TotalCount = prometheus.NewGauge(prometheus.GaugeOpts{
 	Name: "vacme_location_count",
 	Help: "served locations count"})
 
-var LocationsActiveCount = prometheus.NewGauge(prometheus.GaugeOpts{
+var ActiveCount = prometheus.NewGauge(prometheus.GaugeOpts{
 	Name: "vacme_location_active_count",
 	Help: "served locations with active appointments count",
 })
@@ -22,5 +22,5 @@ var DataStaleForMs = prometheus.NewGauge(prometheus.GaugeOpts{
 })
 
 func init() {
-	prometheus.MustRegister(LocationsTotalCount, LocationsActiveCount, LastSuccessfulFetchTime, DataStaleForMs)
+	prometheus.MustRegister(TotalCount, ActiveCount, LastSuccessfulFetchTime, DataStaleForMs)
 }
