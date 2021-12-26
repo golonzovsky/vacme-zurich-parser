@@ -27,7 +27,7 @@ func main() {
 
 	//v2 := r.Group("/api/v2")
 	r.POST("/api/v2/log", handlers.Log) //todo rename to twillio callback and check hmac(sha1)
-	r.GET("/api/v2/locations", locations.Handler)
+	r.GET("/api/v2/locations", locations.NewFetcher().Handler)
 
 	r.Run("0.0.0.0:8000")
 
