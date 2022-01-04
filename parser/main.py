@@ -167,7 +167,7 @@ def fetch_location_with_available_first_appointment(locations):
     next_first_date_locations = []
 
     for location in locations:
-        if location.get('noFreieTermine'):
+        if location.get('noFreieTermine1'):
             # skip prefiltered from server
             continue
 
